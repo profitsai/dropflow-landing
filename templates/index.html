@@ -40,13 +40,7 @@
             </div>
         </div>
 
-        <div class="relative mx-auto max-w-5xl group mt-12">
-            <div class="absolute -inset-0.5 bg-gradient-to-t from-brand/0 to-brand/40 rounded-2xl blur-xl opacity-50 group-hover:opacity-70 transition duration-500"></div>
-            <div class="relative rounded-2xl bg-[#0f172a] border border-white/10 shadow-2xl overflow-hidden transform transition-transform duration-500 hover:scale-[1.005]">
-                <img src="{{ url_for('static', filename='dashboard.jpg') }}" alt="DropFlow Dashboard" class="w-full h-auto block" />
-                <div class="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/[0.03] to-white/0 pointer-events-none"></div>
-            </div>
-        </div>
+<!-- Dashboard image moved to Command Center section below -->
     </div>
 </section>
 
@@ -297,6 +291,20 @@
                     <h3 class="text-xl font-bold text-white mb-3">Hands-Free Fulfillment</h3>
                     <p class="text-slate-400 text-sm leading-relaxed">When a customer buys, we auto-order from the supplier. We even upload the tracking number back to eBay automatically.</p>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Command Center -->
+    <section class="py-32 relative max-w-7xl mx-auto px-6 border-t border-white/5">
+        <div class="text-center mb-16 relative z-10">
+            <h2 class="text-3xl md:text-4xl font-extrabold text-white mb-4">Manage your entire empire from one screen.</h2>
+            <p class="text-slate-400 max-w-2xl mx-auto">Track profits, resolve out-of-stock warnings, and monitor your live automation feed in real-time.</p>
+        </div>
+        <div class="relative max-w-5xl mx-auto">
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-brand/30 blur-[120px] rounded-full pointer-events-none"></div>
+            <div class="relative rounded-2xl bg-slate-900 border border-white/10 p-2 shadow-2xl">
+                <img src="{{ url_for('static', filename='dashboard.jpg') }}" alt="DropFlow Dashboard" class="rounded-xl border border-white/5 w-full">
             </div>
         </div>
     </section>
