@@ -18,8 +18,9 @@ def login():
     return render_template('login.html')
 
 
+@app.route('/signup')
 @app.route('/register')
-def register():
+def signup():
     return render_template('signup.html')
 
 
