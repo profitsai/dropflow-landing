@@ -14,5 +14,9 @@ def pricing():
 def dashboard():
     return render_template('dashboard.html')
 
+@app.route('/scraper')
+def scraper():
+    return render_template('scraper.html')
+
 if __name__ == '__main__':
     app.run(debug=True)
