@@ -45,6 +45,8 @@
     </style>
 {% endblock %}
 
+{% block body_attrs %}x-data="productsTable()" x-init="setTimeout(() => { isLoading = false }, 2000)"{% endblock %}
+
 {% block content %}
         <header class="pt-6 px-8 pb-4">
             <div class="flex items-center justify-between mb-6">
@@ -104,7 +106,54 @@
                             <th class="py-4 pr-6 pl-4 w-12"></th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-white/5">
+                    <tbody class="divide-y divide-white/5 relative">
+                        <!-- Skeleton Loading -->
+                        <template x-if="isLoading">
+                            <template x-for="i in 5">
+                                <tr>
+                                    <td class="py-4 pl-6 pr-4"><div class="w-4 h-4 rounded bg-slate-800 animate-pulse"></div></td>
+                                    <td class="py-4 px-4">
+                                        <div class="flex items-center gap-4">
+                                            <div class="w-12 h-12 rounded-lg bg-slate-800 animate-pulse flex-shrink-0"></div>
+                                            <div class="space-y-2 w-full">
+                                                <div class="h-3 bg-slate-800 rounded w-3/4 animate-pulse"></div>
+                                                <div class="h-3 bg-slate-800 rounded w-1/2 animate-pulse"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="py-4 px-4">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-6 h-6 rounded bg-slate-800 animate-pulse"></div>
+                                            <div class="w-6 h-6 rounded bg-slate-800 animate-pulse"></div>
+                                            <div class="w-6 h-6 rounded bg-slate-800 animate-pulse"></div>
+                                        </div>
+                                    </td>
+                                    <td class="py-4 px-4">
+                                        <div class="space-y-2">
+                                            <div class="h-3 bg-slate-800 rounded w-16 animate-pulse"></div>
+                                            <div class="h-3 bg-slate-800 rounded w-20 animate-pulse"></div>
+                                        </div>
+                                    </td>
+                                    <td class="py-4 px-4"><div class="h-4 bg-slate-800 rounded w-12 animate-pulse"></div></td>
+                                    <td class="py-4 px-4">
+                                        <div class="space-y-2">
+                                            <div class="h-3 bg-slate-800 rounded w-24 animate-pulse"></div>
+                                            <div class="h-3 bg-slate-800 rounded w-24 animate-pulse"></div>
+                                        </div>
+                                    </td>
+                                    <td class="py-4 px-4">
+                                        <div class="flex items-center justify-center gap-4">
+                                            <div class="h-6 bg-slate-800 rounded w-8 animate-pulse"></div>
+                                            <div class="w-px h-6 bg-white/5"></div>
+                                            <div class="h-6 bg-slate-800 rounded w-8 animate-pulse"></div>
+                                        </div>
+                                    </td>
+                                    <td class="py-4 pr-6 pl-4 text-right"><div class="h-6 bg-slate-800 rounded w-6 ml-auto animate-pulse"></div></td>
+                                </tr>
+                            </template>
+                        </template>
+                        <!-- Real Data -->
+                        <template x-if="!isLoading">
                         <template x-for="product in products" :key="product.id">
                             <tr class="hover:bg-white/[0.02] transition-colors group">
                                 <td class="py-4 pl-6 pr-4">
@@ -186,6 +235,7 @@
                                 </td>
                             </tr>
                         </template>
+                        </template>
                     </tbody>
                 </table>
             </div>
@@ -197,6 +247,7 @@
 <script>
         document.addEventListener('alpine:init', () => {
             Alpine.data('productsTable', () => ({
+                isLoading: true,
                 selected: [],
                 products: [
                     { id: 1, title: 'Temporary Tattoos for Adults and Children 3D Realistic Fake Tattoo Waterproof', image: 'https://placehold.co/100x100/1e293b/a78bfa?text=TATTOO', uploaded: 'Feb 15, 2026', tag: 'Beauty', inv: { available: 1, hold: 0, oos: 0 }, buyPrice: 'A$16.35', sellPrice: 'A$38.25', profit: 'A$21.90', srcId: 'B08D3KXL', ebayId: '281341800010', sold: 8, views: 32 },
