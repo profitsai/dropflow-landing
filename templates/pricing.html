@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="py-24 px-6 max-w-7xl mx-auto relative">
+    <div class="text-center mb-20">
+        <h1 class="text-5xl md:text-6xl font-extrabold text-white mb-6">Simple, transparent pricing.</h1>
+        <p class="text-xl text-slate-400 max-w-2xl mx-auto">Start for free, scale when you are profitable. Choose the mode that fits your store's age and volume.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <div class="bg-white/[0.02] border border-white/10 rounded-3xl p-10 flex flex-col hover:border-white/20 transition-all">
+            <h3 class="text-2xl font-bold text-white mb-2">Stealth Starter</h3>
+            <p class="text-slate-400 mb-6 text-sm">Perfect for fresh eBay accounts protecting their metrics.</p>
+            <div class="mb-8">
+                <span class="text-5xl font-extrabold text-white">$29</span>
+                <span class="text-slate-400">/mo</span>
+            </div>
+            <ul class="space-y-4 text-slate-300 mb-10 flex-grow">
+                <li class="flex items-center gap-3"><span class="text-brand">✓</span> Up to 500 Monitored Listings</li>
+                <li class="flex items-center gap-3"><span class="text-brand">✓</span> Non-API Chrome Extension</li>
+                <li class="flex items-center gap-3"><span class="text-brand">✓</span> 100% Ban Protection</li>
+                <li class="flex items-center gap-3"><span class="text-brand">✓</span> Manual Order Fulfillment</li>
+            </ul>
+            <a href="#" class="w-full text-center py-4 rounded-xl font-semibold text-white bg-white/5 border border-white/10 hover:bg-white/10 transition-all">Get Started</a>
+        </div>
+
+        <div class="bg-gradient-to-b from-brand/20 to-bg-dark border border-brand/50 rounded-3xl p-10 flex flex-col relative transform md:-translate-y-4 shadow-[0_0_30px_rgba(139,92,246,0.2)]">
+            <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-brand text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Most Popular</div>
+            <h3 class="text-2xl font-bold text-white mb-2">Pro Automation</h3>
+            <p class="text-slate-400 mb-6 text-sm">For established stores pushing high volume via API.</p>
+            <div class="mb-8">
+                <span class="text-5xl font-extrabold text-white">$79</span>
+                <span class="text-slate-400">/mo</span>
+            </div>
+            <ul class="space-y-4 text-slate-300 mb-10 flex-grow">
+                <li class="flex items-center gap-3"><span class="text-brand">✓</span> Up to 5,000 Monitored Listings</li>
+                <li class="flex items-center gap-3"><span class="text-brand">✓</span> Lightning Fast API Connection</li>
+                <li class="flex items-center gap-3"><span class="text-brand">✓</span> Fully Automated 1-Click Ordering</li>
+                <li class="flex items-center gap-3"><span class="text-brand">✓</span> Advanced Competitor Scraper</li>
+            </ul>
+            <a href="#" class="w-full text-center py-4 rounded-xl font-semibold text-white bg-brand hover:bg-brand-light transition-all shadow-lg">Start 14-Day Free Trial</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

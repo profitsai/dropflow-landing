@@ -2,8 +2,15 @@ from flask import Flask, render_template
 
 app = Flask(__name__)
 
+# The Landing Page
 @app.route('/')
 def home():
     return render_template('index.html')
 
-# Note: PythonAnywhere handles the server, so we don't need any extra setup code here!
+# The New Pricing Page
+@app.route('/pricing')
+def pricing():
+    return render_template('pricing.html')
+
+if __name__ == '__main__':
+    app.run(debug=True)
