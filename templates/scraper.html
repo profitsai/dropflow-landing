@@ -68,7 +68,7 @@
                         </div>
                         <input type="text"
                             :placeholder="
-                                platform === 'ebay' ? 'https://www.ebay.com/str/megadeals_online' :
+                                platform === 'ebay' ? 'https://www.ebay.com/str/...' :
                                 platform === 'amazon' ? 'https://www.amazon.com/s?seller=...' :
                                 'https://www.aliexpress.com/store/...'
                             "
@@ -144,7 +144,10 @@
                 <tbody class="divide-y divide-white/5 text-sm">
                     <tr class="hover:bg-white/[0.02] transition-colors">
                         <td class="py-4 px-6">
-                            <p class="text-white font-medium truncate max-w-[250px]">ebay.com/str/megadeals_online</p>
+                            <p class="text-white font-medium truncate max-w-[250px] flex items-center gap-2">
+                                ebay.com/str/********
+                                <svg class="w-3 h-3 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8V7a4 4 0 00-8 0v4h8z" /></svg>
+                            </p>
                             <p class="text-xs text-slate-500 font-mono mt-0.5">Started 2 mins ago</p>
                         </td>
                         <td class="py-4 px-6"><span class="bg-red-500/10 text-red-400 border border-red-500/20 px-2 py-0.5 rounded text-[10px] font-bold">eBay</span></td>
