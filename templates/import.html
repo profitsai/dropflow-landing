@@ -15,234 +15,237 @@
 {% block body_attrs %}x-data="{ platform: 'amazon', importMode: 'single', activeTab: 'import', isImporting: false }"{% endblock %}
 
 {% block content %}
-        <header class="pt-8 px-8 pb-6 border-b border-white/5 bg-bg-dark/80 backdrop-blur-md sticky top-0 z-10">
-            <h1 class="text-2xl font-bold text-white">Import Products</h1>
-            <p class="text-sm text-slate-400 mt-1">Import and manage products from Amazon and AliExpress</p>
-        </header>
-
-        <div class="p-8 max-w-7xl mx-auto w-full space-y-6 pb-24">
-            <!-- Destination Banner -->
-            <div class="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center text-blue-400">
-                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
-                    </div>
-                    <div>
-                        <h3 class="text-sm font-bold text-white">Destination Platform</h3>
-                        <p class="text-xs text-slate-400">All imported products will be routed here.</p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-2 rounded-lg">
-                    <span class="w-2 h-2 rounded-full bg-green-400 shadow-[0_0_5px_#4ade80]"></span>
-                    <span class="text-sm font-bold text-white">eBay Connected</span>
-                </div>
+    <header class="pt-8 px-8 pb-6 border-b border-white/5 bg-bg-dark/80 backdrop-blur-md sticky top-0 z-10">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-2xl font-bold text-white">Import Products</h1>
+                <p class="text-sm text-slate-400 mt-1">Extract and optimize products from suppliers directly to eBay.</p>
             </div>
-
-            <!-- Tabs -->
-            <div class="flex gap-4 border-b border-white/10">
-                <button @click="activeTab = 'import'" :class="activeTab === 'import' ? 'text-brand-light border-b-2 border-brand font-medium' : 'text-slate-400 hover:text-white'" class="pb-3 px-2 flex items-center gap-2 transition-colors">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
-                    Import Products
-                </button>
-                <button @click="activeTab = 'drafts'" :class="activeTab === 'drafts' ? 'text-brand-light border-b-2 border-brand font-medium' : 'text-slate-400 hover:text-white'" class="pb-3 px-2 flex items-center gap-2 transition-colors">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                    Drafts (3)
-                </button>
-            </div>
-
-            <!-- Feature Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4" x-show="activeTab === 'import'">
-                <div class="bg-bg-card border border-white/5 rounded-xl p-5 flex flex-col items-center text-center shadow-lg">
-                    <div class="w-10 h-10 rounded-full bg-blue-500/10 text-blue-400 flex items-center justify-center mb-3"><svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg></div>
-                    <h4 class="text-sm font-bold text-white">Auto-Optimization</h4>
-                    <p class="text-xs text-slate-400 mt-1">Titles & descriptions optimized</p>
-                </div>
-                <div class="bg-bg-card border border-white/5 rounded-xl p-5 flex flex-col items-center text-center shadow-lg">
-                    <div class="w-10 h-10 rounded-full bg-cyan-500/10 text-cyan-400 flex items-center justify-center mb-3"><svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /></svg></div>
-                    <h4 class="text-sm font-bold text-white">Price Calculation</h4>
-                    <p class="text-xs text-slate-400 mt-1">Smart profit margins applied</p>
-                </div>
-                <div class="bg-bg-card border border-white/5 rounded-xl p-5 flex flex-col items-center text-center shadow-lg">
-                    <div class="w-10 h-10 rounded-full bg-purple-500/10 text-purple-400 flex items-center justify-center mb-3"><svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></div>
-                    <h4 class="text-sm font-bold text-white">Quality Check</h4>
-                    <p class="text-xs text-slate-400 mt-1">Automatic link validation</p>
-                </div>
-                <div class="bg-bg-card border border-white/5 rounded-xl p-5 flex flex-col items-center text-center shadow-lg">
-                    <div class="w-10 h-10 rounded-full bg-brand/10 text-brand-light flex items-center justify-center mb-3"><svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg></div>
-                    <h4 class="text-sm font-bold text-white">Bulk Import</h4>
-                    <p class="text-xs text-slate-400 mt-1">Process multiple links at once</p>
-                </div>
-            </div>
-
-            <!-- Main Content -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6" x-show="activeTab === 'import'">
-                <div class="lg:col-span-2 space-y-6">
-                    <div class="bg-bg-card border border-white/5 rounded-2xl p-8 shadow-xl relative overflow-hidden">
-                        <div class="absolute -top-24 -right-24 w-64 h-64 rounded-full mix-blend-screen filter blur-[80px] opacity-20 pointer-events-none transition-colors duration-500" :class="platform === 'amazon' ? 'bg-yellow-500' : 'bg-orange-500'"></div>
-
-                        <!-- Platform Toggle -->
-                        <div class="flex p-1 bg-bg-dark rounded-lg mb-8 border border-white/5">
-                            <button @click="platform = 'amazon'" :class="platform === 'amazon' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-400 hover:text-white'" class="flex-1 py-2.5 text-sm font-bold rounded-md transition-all flex items-center justify-center gap-2">
-                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
-                                Amazon
-                            </button>
-                            <button @click="platform = 'aliexpress'" :class="platform === 'aliexpress' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-400 hover:text-white'" class="flex-1 py-2.5 text-sm font-bold rounded-md transition-all flex items-center justify-center gap-2">
-                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                                AliExpress
-                            </button>
-                        </div>
-
-                        <!-- Import Mode Toggle -->
-                        <div class="flex gap-4 mb-6 border-b border-white/5 pb-6">
-                            <button @click="importMode = 'single'" :class="importMode === 'single' ? 'bg-brand/20 text-brand-light border-brand/30' : 'bg-white/5 text-slate-300 border-white/10 hover:bg-white/10'" class="px-4 py-2 text-sm font-medium rounded-lg border transition-all flex items-center gap-2">
-                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
-                                Single URL
-                            </button>
-                            <button @click="importMode = 'bulk'" :class="importMode === 'bulk' ? 'bg-brand/20 text-brand-light border-brand/30' : 'bg-white/5 text-slate-300 border-white/10 hover:bg-white/10'" class="px-4 py-2 text-sm font-medium rounded-lg border transition-all flex items-center gap-2">
-                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                                Bulk Import
-                            </button>
-                        </div>
-
-                        <!-- URL Input -->
-                        <div class="mb-8">
-                            <label class="block text-sm font-bold text-white mb-2">
-                                <span x-text="platform === 'amazon' ? 'Amazon Product URL' : 'AliExpress Product URL'"></span>
-                                <span x-show="importMode === 'bulk'" class="text-brand-light font-normal text-xs ml-2">(Paste multiple URLs separated by commas or lines)</span>
-                            </label>
-                            <input x-show="importMode === 'single'" type="text" :placeholder="platform === 'amazon' ? 'https://www.amazon.com/dp/B08D...' : 'https://www.aliexpress.com/item/100...'" class="w-full bg-[#0a0f1c] border border-white/10 rounded-lg px-4 py-3 text-sm text-white focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all placeholder-slate-600">
-                            <textarea x-show="importMode === 'bulk'" x-cloak :placeholder="platform === 'amazon' ? 'https://www.amazon.com/dp/B08D...\nhttps://www.amazon.com/dp/B09F...' : 'https://www.aliexpress.com/item/100...\nhttps://www.aliexpress.com/item/200...'" rows="4" class="w-full bg-[#0a0f1c] border border-white/10 rounded-lg px-4 py-3 text-sm text-white focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all placeholder-slate-600"></textarea>
-                            <p class="text-xs text-slate-500 mt-2">Paste the full product URL(s) to automatically extract images, descriptions, and variations.</p>
-                        </div>
-
-                        <!-- Auto-Import Features -->
-                        <div class="mb-8">
-                            <h4 class="text-sm font-bold text-white flex items-center gap-2 mb-4">
-                                <svg class="w-4 h-4 text-brand-light" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                                Auto-Import Features:
-                            </h4>
-                            <ul class="space-y-3 text-sm text-slate-400">
-                                <li class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg> Product title optimization for eBay</li>
-                                <li class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg> Description enhancement with keywords</li>
-                                <li class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg> All product images downloaded automatically</li>
-                                <li class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg> Price calculation with smart profit margins</li>
-                                <li class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg> Variants (sizes, colors) imported seamlessly</li>
-                            </ul>
-                        </div>
-
-                        <!-- Submit Button -->
-                        <button
-                            @click="isImporting = true; setTimeout(() => { isImporting = false; $store.toast.show('12 products imported successfully!', 'success') }, 3000)"
-                            :disabled="isImporting"
-                            class="w-full bg-brand hover:bg-brand-light disabled:bg-brand/50 disabled:cursor-not-allowed text-white font-bold py-4 rounded-xl transition-all shadow-[0_0_20px_rgba(139,92,246,0.3)] hover:shadow-[0_0_30px_rgba(139,92,246,0.5)] disabled:shadow-none flex items-center justify-center gap-2 relative overflow-hidden">
-                            <div class="flex items-center gap-2 transition-opacity duration-200" :class="isImporting ? 'opacity-0' : 'opacity-100'">
-                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
-                                <span x-text="importMode === 'bulk' ? 'Start Bulk Import' : 'Import from ' + (platform === 'amazon' ? 'Amazon' : 'AliExpress')"></span>
-                            </div>
-                            <div class="absolute inset-0 flex items-center justify-center gap-2 transition-opacity duration-200" :class="isImporting ? 'opacity-100' : 'opacity-0'">
-                                <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg>
-                                <span>Importing products...</span>
-                            </div>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Sidebar -->
-                <div class="space-y-6">
-                    <!-- Import Stats -->
-                    <div class="bg-bg-card border border-white/5 rounded-2xl p-6 shadow-lg">
-                        <h3 class="text-sm font-bold text-white flex items-center gap-2 mb-6">
-                            <svg class="w-4 h-4 text-brand-light" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
-                            Import Stats (Last 7 Days)
-                        </h3>
-                        <div class="space-y-4">
-                            <div>
-                                <div class="flex justify-between text-xs text-slate-400 mb-1">
-                                    <span>Total Imported</span>
-                                    <span class="font-bold text-white">127 products</span>
-                                </div>
-                                <div class="w-full bg-bg-dark rounded-full h-1.5 border border-white/5">
-                                    <div class="bg-brand-light h-1.5 rounded-full" style="width: 100%"></div>
-                                </div>
-                            </div>
-                            <div>
-                                <div class="flex justify-between text-xs text-slate-400 mb-1">
-                                    <span>Success Rate</span>
-                                    <span class="font-bold text-white">98.4%</span>
-                                </div>
-                                <div class="w-full bg-bg-dark rounded-full h-1.5 border border-white/5">
-                                    <div class="bg-blue-500 h-1.5 rounded-full" style="width: 98.4%"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mt-6 pt-6 border-t border-white/5">
-                            <p class="text-xs text-slate-500 mb-3">Sources Breakdown</p>
-                            <div class="flex justify-between items-center text-sm mb-2">
-                                <span class="bg-white/5 px-2 py-1 rounded text-slate-300">Amazon</span>
-                                <span class="font-bold text-white">68 products</span>
-                            </div>
-                            <div class="flex justify-between items-center text-sm">
-                                <span class="bg-white/5 px-2 py-1 rounded text-slate-300">AliExpress</span>
-                                <span class="font-bold text-white">59 products</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Pro Tips -->
-                    <div class="bg-gradient-to-br from-brand/10 to-transparent border border-brand/20 rounded-2xl p-6 shadow-lg">
-                        <h3 class="text-sm font-bold text-brand-light flex items-center gap-2 mb-4">
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-                            Pro Tips
-                        </h3>
-                        <ul class="space-y-3 text-xs text-slate-300 leading-relaxed">
-                            <li class="flex items-start gap-2"><svg class="w-3.5 h-3.5 mt-0.5 text-slate-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg> Import products with 4+ star ratings for fewer returns.</li>
-                            <li class="flex items-start gap-2"><svg class="w-3.5 h-3.5 mt-0.5 text-slate-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg> Always check product availability before importing in bulk.</li>
-                            <li class="flex items-start gap-2"><svg class="w-3.5 h-3.5 mt-0.5 text-slate-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg> Use the Scraper tool first to get a massive list of URLs for the Bulk Import feature.</li>
-                        </ul>
-                    </div>
-
-                    <!-- Recent Imports -->
-                    <div class="bg-bg-card border border-white/5 rounded-2xl p-6 shadow-lg">
-                        <h3 class="text-sm font-bold text-white mb-4">Recent Imports</h3>
-                        <div class="space-y-4">
-                            <div class="flex gap-3">
-                                <div class="mt-0.5"><svg class="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></div>
-                                <div>
-                                    <p class="text-sm font-medium text-white line-clamp-1">Wireless Earbuds Bluetooth 5.3...</p>
-                                    <p class="text-[10px] text-slate-500 mt-0.5">5 min ago • Amazon</p>
-                                </div>
-                            </div>
-                            <div class="flex gap-3">
-                                <div class="mt-0.5"><svg class="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></div>
-                                <div>
-                                    <p class="text-sm font-medium text-white line-clamp-1">Smart Watch Fitness Tracker for...</p>
-                                    <p class="text-[10px] text-slate-500 mt-0.5">12 min ago • AliExpress</p>
-                                </div>
-                            </div>
-                            <div class="flex gap-3">
-                                <div class="mt-0.5"><svg class="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></div>
-                                <div>
-                                    <p class="text-sm font-medium text-white line-clamp-1">Fast Charging Cable Type C 3-Pack</p>
-                                    <p class="text-[10px] text-slate-500 mt-0.5">1 hour ago • Amazon</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Drafts Tab -->
-            <div x-show="activeTab === 'drafts'" x-cloak class="bg-bg-card border border-white/5 rounded-2xl p-12 text-center shadow-lg">
-                <div class="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-4 border border-white/10">
-                    <svg class="w-8 h-8 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                </div>
-                <h3 class="text-lg font-bold text-white mb-2">You have 3 products in Drafts</h3>
-                <p class="text-slate-400 text-sm max-w-md mx-auto mb-6">These products were imported but require manual review before they can be pushed to your eBay store.</p>
-                <button class="bg-white/10 hover:bg-white/20 text-white font-medium py-2 px-6 rounded-lg transition-colors border border-white/10">Review Drafts</button>
+            <div class="flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-2 rounded-lg">
+                <span class="text-sm font-medium text-slate-400">Destination:</span>
+                <span class="flex items-center gap-1.5 text-sm font-bold text-white">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_5px_#34d399]"></span>
+                    My eBay Store
+                </span>
             </div>
         </div>
-    
+        <div class="flex gap-6 mt-8">
+            <button @click="activeTab = 'import'" :class="activeTab === 'import' ? 'text-brand-light border-b-2 border-brand font-bold' : 'text-slate-400 hover:text-white border-b-2 border-transparent font-medium'" class="pb-3 flex items-center gap-2 transition-all">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+                Import Console
+            </button>
+            <button @click="activeTab = 'drafts'" :class="activeTab === 'drafts' ? 'text-brand-light border-b-2 border-brand font-bold' : 'text-slate-400 hover:text-white border-b-2 border-transparent font-medium'" class="pb-3 flex items-center gap-2 transition-all">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                Review Drafts
+                <span class="bg-brand/20 text-brand-light text-[10px] px-1.5 py-0.5 rounded">3</span>
+            </button>
+        </div>
+    </header>
+
+    <div class="p-8 max-w-7xl mx-auto w-full space-y-6 pb-24">
+        <!-- Import Console Tab -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8" x-show="activeTab === 'import'"
+            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 translate-y-2"
+            x-transition:enter-end="opacity-100 translate-y-0">
+
+            <!-- Main Import Card -->
+            <div class="lg:col-span-2 space-y-6">
+                <div class="bg-bg-card border border-white/5 rounded-2xl p-8 shadow-xl relative overflow-hidden">
+                    <div class="absolute -top-32 -right-32 w-80 h-80 rounded-full mix-blend-screen filter blur-[100px] opacity-20 pointer-events-none transition-colors duration-500"
+                        :class="platform === 'amazon' ? 'bg-yellow-500' : 'bg-orange-500'"></div>
+
+                    <!-- Platform Toggle -->
+                    <div class="flex p-1 bg-[#050810] rounded-lg mb-8 border border-white/10 shadow-inner">
+                        <button @click="platform = 'amazon'" :class="platform === 'amazon' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-400 hover:text-white'" class="flex-1 py-3 text-sm font-bold rounded-md transition-all flex items-center justify-center gap-2">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
+                            Amazon
+                        </button>
+                        <button @click="platform = 'aliexpress'" :class="platform === 'aliexpress' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-400 hover:text-white'" class="flex-1 py-3 text-sm font-bold rounded-md transition-all flex items-center justify-center gap-2">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            AliExpress
+                        </button>
+                    </div>
+
+                    <!-- Import Mode Toggle -->
+                    <div class="flex gap-4 mb-6">
+                        <button @click="importMode = 'single'" :class="importMode === 'single' ? 'bg-brand/20 text-brand-light border-brand/30' : 'bg-white/5 text-slate-300 border-white/10 hover:bg-white/10'" class="px-4 py-2 text-sm font-medium rounded-lg border transition-all flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
+                            Single URL
+                        </button>
+                        <button @click="importMode = 'bulk'" :class="importMode === 'bulk' ? 'bg-brand/20 text-brand-light border-brand/30' : 'bg-white/5 text-slate-300 border-white/10 hover:bg-white/10'" class="px-4 py-2 text-sm font-medium rounded-lg border transition-all flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                            Bulk URLs
+                        </button>
+                    </div>
+
+                    <!-- URL Input -->
+                    <div class="mb-8">
+                        <label class="block text-sm font-bold text-white mb-2">
+                            <span x-text="platform === 'amazon' ? 'Amazon Product URL' : 'AliExpress Product URL'"></span>
+                            <span x-show="importMode === 'bulk'" class="text-brand-light font-normal text-xs ml-2">(Paste multiple URLs separated by new lines)</span>
+                        </label>
+                        <div x-show="importMode === 'single'" class="relative">
+                            <div class="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-500">
+                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
+                            </div>
+                            <input type="text" :placeholder="platform === 'amazon' ? 'https://www.amazon.com/dp/B08D...' : 'https://www.aliexpress.com/item/100...'" class="w-full bg-[#050810] border border-white/10 rounded-xl pl-12 pr-4 py-4 text-sm text-white focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all placeholder-slate-600 shadow-inner">
+                        </div>
+                        <textarea x-show="importMode === 'bulk'" x-cloak :placeholder="platform === 'amazon' ? 'https://www.amazon.com/dp/B08D...\nhttps://www.amazon.com/dp/B09F...' : 'https://www.aliexpress.com/item/100...\nhttps://www.aliexpress.com/item/200...'" rows="6" class="w-full bg-[#050810] border border-white/10 rounded-xl px-4 py-4 text-sm text-white focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all placeholder-slate-600 shadow-inner leading-relaxed"></textarea>
+                    </div>
+
+                    <!-- Pricing Profile Banner -->
+                    <div class="flex items-center justify-between mb-6 p-4 bg-white/5 border border-white/10 rounded-xl">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded bg-blue-500/20 text-blue-400 flex items-center justify-center border border-blue-500/30">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-white">Current Pricing Profile: <span class="text-brand-light">25% Margin</span></p>
+                                <p class="text-xs text-slate-400">Includes 13% eBay fees + $5 minimum profit</p>
+                            </div>
+                        </div>
+                        <a href="/settings" class="text-xs font-bold text-slate-400 hover:text-white transition-colors border border-white/10 px-3 py-1.5 rounded-lg hover:bg-white/5">Edit Settings</a>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button
+                        @click="isImporting = true; setTimeout(() => { isImporting = false; $store.toast.show(importMode === 'bulk' ? 'Items added to Drafts!' : 'Product imported successfully!', 'success') }, 2500)"
+                        :disabled="isImporting"
+                        class="w-full bg-brand hover:bg-brand-light disabled:bg-brand/50 disabled:cursor-not-allowed text-white font-bold py-4 rounded-xl transition-all shadow-[0_0_20px_rgba(139,92,246,0.3)] hover:shadow-[0_0_30px_rgba(139,92,246,0.5)] disabled:shadow-none flex items-center justify-center gap-2 relative overflow-hidden">
+                        <div class="flex items-center gap-2 transition-opacity duration-200" :class="isImporting ? 'opacity-0' : 'opacity-100'">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+                            <span x-text="importMode === 'bulk' ? 'Start Bulk Import to Drafts' : 'Import from ' + (platform === 'amazon' ? 'Amazon' : 'AliExpress')"></span>
+                        </div>
+                        <div class="absolute inset-0 flex items-center justify-center gap-2 transition-opacity duration-200" :class="isImporting ? 'opacity-100' : 'opacity-0'">
+                            <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            <span>Extracting data...</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="space-y-6">
+                <!-- Pro Tip -->
+                <div class="bg-gradient-to-br from-brand/10 to-transparent border border-brand/20 rounded-2xl p-6 shadow-lg">
+                    <h3 class="text-sm font-bold text-brand-light flex items-center gap-2 mb-3">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                        Pro Tip
+                    </h3>
+                    <p class="text-xs text-slate-300 leading-relaxed">Need massive volume? Use the <a href="/scraper" class="text-white font-bold underline decoration-brand/50 hover:decoration-brand">Scraper tool</a> first to generate a list of thousands of URLs, then paste them into the Bulk URLs box here.</p>
+                </div>
+
+                <!-- Recent Imports -->
+                <div class="bg-bg-card border border-white/5 rounded-2xl p-6 shadow-lg flex-1">
+                    <h3 class="text-sm font-bold text-white mb-4 flex items-center justify-between">
+                        Recent Imports
+                        <span class="text-[10px] font-normal text-slate-400">Live Status</span>
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-3">
+                            <div class="mt-1"><span class="flex w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_5px_#34d399]"></span></div>
+                            <div>
+                                <p class="text-sm font-medium text-white line-clamp-1">Wireless Earbuds Bluetooth 5.3...</p>
+                                <div class="flex items-center gap-2 mt-1 text-[10px] text-slate-500 font-mono">
+                                    <span>ASIN: B08X4J21</span> • <span>5 min ago</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="mt-1"><span class="flex w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_5px_#34d399]"></span></div>
+                            <div>
+                                <p class="text-sm font-medium text-white line-clamp-1">Smart Watch Fitness Tracker for...</p>
+                                <div class="flex items-center gap-2 mt-1 text-[10px] text-slate-500 font-mono">
+                                    <span>ALI: 10050042</span> • <span>12 min ago</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="mt-1"><span class="flex w-2 h-2 rounded-full bg-yellow-400"></span></div>
+                            <div>
+                                <p class="text-sm font-medium text-slate-300 line-clamp-1">Heavy Duty Office Chair Mat...</p>
+                                <div class="flex items-center gap-2 mt-1 text-[10px] text-slate-500 font-mono">
+                                    <span class="text-yellow-500/70 border border-yellow-500/20 px-1 rounded bg-yellow-500/10">In Drafts</span> • <span>1 hour ago</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Drafts Tab -->
+        <div x-show="activeTab === 'drafts'" x-cloak
+            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 translate-y-2"
+            x-transition:enter-end="opacity-100 translate-y-0">
+            <div class="bg-bg-card border border-white/5 rounded-2xl shadow-xl overflow-hidden">
+                <div class="p-4 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
+                    <p class="text-sm text-slate-300 font-medium">3 products await your review before publishing to eBay.</p>
+                    <div class="flex gap-2">
+                        <button class="px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-xs font-bold rounded-lg transition-colors border border-red-500/20">Delete All</button>
+                        <button class="px-4 py-2 bg-brand hover:bg-brand-light text-white text-xs font-bold rounded-lg transition-colors shadow-lg shadow-brand/20">Publish All to eBay</button>
+                    </div>
+                </div>
+                <table class="w-full text-left">
+                    <thead class="bg-black/20 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                        <tr>
+                            <th class="py-3 px-6">Product</th>
+                            <th class="py-3 px-6">Source</th>
+                            <th class="py-3 px-6">Calculated Price</th>
+                            <th class="py-3 px-6 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-white/5">
+                        <tr class="hover:bg-white/[0.02] transition-colors">
+                            <td class="py-4 px-6">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded bg-slate-800 flex-shrink-0"></div>
+                                    <p class="text-sm text-white font-medium">Heavy Duty Office Chair Mat Hardwood Floor</p>
+                                </div>
+                            </td>
+                            <td class="py-4 px-6"><span class="bg-yellow-500/20 text-yellow-500 text-[10px] font-bold px-2 py-0.5 rounded">Amazon</span></td>
+                            <td class="py-4 px-6 text-emerald-400 font-bold font-mono">A$35.95</td>
+                            <td class="py-4 px-6 text-right">
+                                <button class="text-xs text-brand hover:text-white transition-colors mr-3 font-medium">Edit</button>
+                                <button class="text-xs text-white bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded transition-colors">Publish</button>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-white/[0.02] transition-colors">
+                            <td class="py-4 px-6">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded bg-slate-800 flex-shrink-0"></div>
+                                    <p class="text-sm text-white font-medium">Stainless Steel Kitchen Knife Set 15 Piece</p>
+                                </div>
+                            </td>
+                            <td class="py-4 px-6"><span class="bg-orange-500/20 text-orange-400 text-[10px] font-bold px-2 py-0.5 rounded">AliExpress</span></td>
+                            <td class="py-4 px-6 text-emerald-400 font-bold font-mono">A$89.99</td>
+                            <td class="py-4 px-6 text-right">
+                                <button class="text-xs text-brand hover:text-white transition-colors mr-3 font-medium">Edit</button>
+                                <button class="text-xs text-white bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded transition-colors">Publish</button>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-white/[0.02] transition-colors">
+                            <td class="py-4 px-6">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded bg-slate-800 flex-shrink-0"></div>
+                                    <p class="text-sm text-white font-medium">LED Strip Lights 50ft with Remote Control</p>
+                                </div>
+                            </td>
+                            <td class="py-4 px-6"><span class="bg-yellow-500/20 text-yellow-500 text-[10px] font-bold px-2 py-0.5 rounded">Amazon</span></td>
+                            <td class="py-4 px-6 text-emerald-400 font-bold font-mono">A$24.50</td>
+                            <td class="py-4 px-6 text-right">
+                                <button class="text-xs text-brand hover:text-white transition-colors mr-3 font-medium">Edit</button>
+                                <button class="text-xs text-white bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded transition-colors">Publish</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 {% endblock %}
