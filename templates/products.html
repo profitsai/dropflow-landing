@@ -45,46 +45,101 @@
     </style>
 {% endblock %}
 
-{% block body_attrs %}x-data="productsTable()" x-init="setTimeout(() => { isLoading = false }, 2000)"{% endblock %}
+{% block body_attrs %}x-data="productsTable()" x-init="setTimeout(() => { isLoading = false }, 2000)" {% endblock %}
 
 {% block content %}
-        <header class="pt-6 px-8 pb-4">
-            <div class="flex items-center justify-between mb-6">
+        <header class="pt-8 px-8 pb-4">
+            <div class="flex items-center justify-between mb-8">
                 <div class="flex items-center gap-3">
-                    <h1 class="text-2xl font-bold text-white">Products</h1>
+                    <h1 class="text-2xl font-bold text-white">Product Catalog</h1>
                     <span class="bg-white/10 text-slate-300 text-xs font-semibold px-2.5 py-1 rounded-md border border-white/5">56,097</span>
                 </div>
                 <div class="flex items-center gap-4">
-                    <div class="relative">
-                        <svg class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 transform -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-                        <input type="text" placeholder="Search by title, Item ID, or tag..." class="w-80 bg-bg-card border border-white/10 rounded-lg pl-10 pr-4 py-2 text-sm text-white focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all placeholder-slate-500">
+                    <div class="relative group">
+                        <svg class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 transform -translate-y-1/2 group-focus-within:text-brand transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                        <input type="text" placeholder="Search title, ASIN, eBay ID..." class="w-80 bg-[#050810] border border-white/10 rounded-lg pl-10 pr-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all placeholder-slate-500 shadow-inner">
                     </div>
-                    <button class="bg-brand hover:bg-brand-light text-white text-sm font-medium py-2 px-4 rounded-lg transition-colors shadow-[0_0_15px_rgba(139,92,246,0.3)]">
-                        + Add Product
+                    <button class="bg-brand hover:bg-brand-light text-white text-sm font-medium py-2.5 px-5 rounded-lg transition-colors shadow-[0_0_15px_rgba(139,92,246,0.3)] flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                        Add Product
                     </button>
                 </div>
             </div>
-            <div class="flex items-center justify-between bg-bg-card border border-white/5 rounded-t-xl p-4">
-                <div class="flex items-center gap-4">
-                    <button class="text-sm font-medium text-slate-300 hover:text-white flex items-center gap-2 border border-white/10 rounded-md px-3 py-1.5 bg-white/5 transition-colors">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" /></svg>
-                        Add Filter
-                    </button>
-                    <div class="h-6 w-px bg-white/10"></div>
-                    <div class="flex items-center gap-2" :class="selected.length > 0 ? 'opacity-100' : 'opacity-50 pointer-events-none'">
-                        <span class="text-xs text-brand-light font-medium px-2" x-show="selected.length > 0"><span x-text="selected.length"></span> Selected</span>
-                        <button class="text-sm font-medium text-slate-300 hover:text-white border border-white/10 rounded-md px-3 py-1.5 bg-white/5 transition-colors flex items-center gap-1">
-                            Bulk Edit
-                        </button>
-                        <button class="text-sm font-medium text-red-400 hover:text-red-300 border border-red-500/20 rounded-md px-3 py-1.5 bg-red-500/10 transition-colors flex items-center gap-1">
-                            Bulk Delete
-                        </button>
+
+            <!-- Triage Metric Cards -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div class="bg-bg-card border border-white/5 rounded-xl p-4 hover:border-white/10 transition-colors">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        </div>
+                        <div>
+                            <p class="text-xl font-extrabold text-white">55,842</p>
+                            <p class="text-[11px] text-slate-400 font-medium">Active & Live</p>
+                        </div>
                     </div>
                 </div>
-                <div class="flex items-center gap-2 text-sm text-slate-400">
-                    <span>1-20 of 56,097</span>
-                    <button class="p-1 hover:bg-white/10 rounded border border-white/10"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg></button>
-                    <button class="p-1 hover:bg-white/10 rounded border border-white/10"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg></button>
+                <div class="bg-bg-card border border-white/5 rounded-xl p-4 hover:border-red-500/20 transition-colors cursor-pointer" @click="activeTab = 'oos'">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-lg bg-red-500/10 text-red-400 flex items-center justify-center">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" /></svg>
+                        </div>
+                        <div>
+                            <p class="text-xl font-extrabold text-white">243</p>
+                            <p class="text-[11px] text-red-400 font-medium">Out of Stock</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-bg-card border border-white/5 rounded-xl p-4 hover:border-white/10 transition-colors">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                        </div>
+                        <div>
+                            <p class="text-xl font-extrabold text-white">87</p>
+                            <p class="text-[11px] text-slate-400 font-medium">Price Updates Today</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-bg-card border border-white/5 rounded-xl p-4 hover:border-yellow-500/20 transition-colors cursor-pointer" @click="activeTab = 'errors'">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-lg bg-yellow-500/10 text-yellow-400 flex items-center justify-center">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                        </div>
+                        <div>
+                            <p class="text-xl font-extrabold text-white">12</p>
+                            <p class="text-[11px] text-yellow-400 font-medium">Sync Errors</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabs + Toolbar -->
+            <div class="bg-bg-card border border-white/5 rounded-t-xl">
+                <div class="flex items-center gap-1 px-4 pt-3 border-b border-white/5">
+                    <button @click="activeTab = 'all'" :class="activeTab === 'all' ? 'text-white border-brand' : 'text-slate-400 border-transparent hover:text-slate-200'" class="px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors">All Products</button>
+                    <button @click="activeTab = 'active'" :class="activeTab === 'active' ? 'text-white border-brand' : 'text-slate-400 border-transparent hover:text-slate-200'" class="px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors">Active</button>
+                    <button @click="activeTab = 'oos'" :class="activeTab === 'oos' ? 'text-white border-brand' : 'text-slate-400 border-transparent hover:text-slate-200'" class="px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors flex items-center gap-2">Out of Stock <span class="bg-red-500/20 text-red-400 text-[10px] font-bold px-1.5 py-0.5 rounded">243</span></button>
+                    <button @click="activeTab = 'errors'" :class="activeTab === 'errors' ? 'text-white border-brand' : 'text-slate-400 border-transparent hover:text-slate-200'" class="px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors flex items-center gap-2">Errors <span class="bg-yellow-500/20 text-yellow-400 text-[10px] font-bold px-1.5 py-0.5 rounded">12</span></button>
+                </div>
+                <div class="flex items-center justify-between p-4">
+                    <div class="flex items-center gap-4">
+                        <button class="text-sm font-medium text-slate-300 hover:text-white flex items-center gap-2 border border-white/10 rounded-md px-3 py-1.5 bg-white/5 transition-colors">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" /></svg>
+                            Add Filter
+                        </button>
+                        <div class="h-6 w-px bg-white/10"></div>
+                        <div class="flex items-center gap-2" :class="selected.length > 0 ? 'opacity-100' : 'opacity-50 pointer-events-none'">
+                            <span class="text-xs text-brand-light font-medium px-2" x-show="selected.length > 0"><span x-text="selected.length"></span> Selected</span>
+                            <button class="text-sm font-medium text-slate-300 hover:text-white border border-white/10 rounded-md px-3 py-1.5 bg-white/5 transition-colors">Bulk Edit</button>
+                            <button class="text-sm font-medium text-red-400 hover:text-red-300 border border-red-500/20 rounded-md px-3 py-1.5 bg-red-500/10 transition-colors">Bulk Delete</button>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm text-slate-400">
+                        <span>1-20 of 56,097</span>
+                        <button class="p-1 hover:bg-white/10 rounded border border-white/10"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg></button>
+                        <button class="p-1 hover:bg-white/10 rounded border border-white/10"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg></button>
+                    </div>
                 </div>
             </div>
         </header>
@@ -169,6 +224,8 @@
                                             <div class="flex items-center gap-2 mt-1.5">
                                                 <span class="text-xs text-slate-500" x-text="'Uploaded: ' + product.uploaded"></span>
                                                 <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-white/5 border border-white/10 text-slate-400" x-text="product.tag"></span>
+                                                <span x-show="product.status === 'live'" class="flex items-center gap-1 text-[10px] font-bold text-emerald-400"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>Live</span>
+                                                <span x-show="product.status === 'oos'" class="text-[10px] font-bold text-red-400">● OOS</span>
                                             </div>
                                         </div>
                                     </div>
@@ -228,10 +285,18 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td class="py-4 pr-6 pl-4 text-right">
-                                    <button class="text-slate-400 hover:text-white p-2 rounded-md hover:bg-white/10 transition-colors">
-                                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" /></svg>
-                                    </button>
+                                <td class="py-4 pr-6 pl-4">
+                                    <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <button class="text-slate-400 hover:text-white p-1.5 rounded hover:bg-white/10 transition-colors" title="Force Sync">
+                                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                                        </button>
+                                        <button class="text-slate-400 hover:text-white p-1.5 rounded hover:bg-white/10 transition-colors" title="Edit">
+                                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                                        </button>
+                                        <button class="text-slate-400 hover:text-white p-1.5 rounded hover:bg-white/10 transition-colors" title="View on eBay">
+                                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         </template>
@@ -248,12 +313,13 @@
         document.addEventListener('alpine:init', () => {
             Alpine.data('productsTable', () => ({
                 isLoading: true,
+                activeTab: 'all',
                 selected: [],
                 products: [
-                    { id: 1, title: 'Temporary Tattoos for Adults and Children 3D Realistic Fake Tattoo Waterproof', image: 'https://placehold.co/100x100/1e293b/a78bfa?text=TATTOO', uploaded: 'Feb 15, 2026', tag: 'Beauty', inv: { available: 1, hold: 0, oos: 0 }, buyPrice: 'A$16.35', sellPrice: 'A$38.25', profit: 'A$21.90', srcId: 'B08D3KXL', ebayId: '281341800010', sold: 8, views: 32 },
-                    { id: 2, title: 'Elegant Silk Formal Gowns Women V Neck Evening Party Dress', image: 'https://placehold.co/100x100/1e293b/a78bfa?text=GOWN', uploaded: 'Feb 14, 2026', tag: 'Clothing', inv: { available: 3, hold: 1, oos: 0 }, buyPrice: 'A$42.00', sellPrice: 'A$89.99', profit: 'A$47.99', srcId: 'B08D3KYP', ebayId: '281341800015', sold: 12, views: 145 },
-                    { id: 3, title: '32-inch Passion Twist Crochet Hair Bohemian Braiding Hair Extensions', image: 'https://placehold.co/100x100/1e293b/a78bfa?text=HAIR', uploaded: 'Feb 12, 2026', tag: 'Beauty', inv: { available: 0, hold: 0, oos: 1 }, buyPrice: 'A$24.50', sellPrice: 'A$45.00', profit: 'A$20.50', srcId: 'B08D3KZQ', ebayId: '281341800022', sold: 45, views: 890 },
-                    { id: 4, title: 'Comfort Office Chair Mats for Hardwood Floor Transparent Heavy Duty', image: 'https://placehold.co/100x100/1e293b/a78bfa?text=MAT', uploaded: 'Feb 10, 2026', tag: 'Home', inv: { available: 15, hold: 0, oos: 0 }, buyPrice: 'A$12.72', sellPrice: 'A$35.95', profit: 'A$23.23', srcId: 'B08D3LWR', ebayId: '281341800030', sold: 112, views: 1205 }
+                    { id: 1, title: 'Temporary Tattoos for Adults and Children 3D Realistic Fake Tattoo Waterproof', image: 'https://placehold.co/100x100/1e293b/a78bfa?text=TATTOO', uploaded: 'Feb 15, 2026', tag: 'Beauty', status: 'live', inv: { available: 1, hold: 0, oos: 0 }, buyPrice: 'A$16.35', sellPrice: 'A$38.25', profit: 'A$21.90', srcId: 'B08D3KXL', ebayId: '281341800010', sold: 8, views: 32 },
+                    { id: 2, title: 'Elegant Silk Formal Gowns Women V Neck Evening Party Dress', image: 'https://placehold.co/100x100/1e293b/a78bfa?text=GOWN', uploaded: 'Feb 14, 2026', tag: 'Clothing', status: 'live', inv: { available: 3, hold: 1, oos: 0 }, buyPrice: 'A$42.00', sellPrice: 'A$89.99', profit: 'A$47.99', srcId: 'B08D3KYP', ebayId: '281341800015', sold: 12, views: 145 },
+                    { id: 3, title: '32-inch Passion Twist Crochet Hair Bohemian Braiding Hair Extensions', image: 'https://placehold.co/100x100/1e293b/a78bfa?text=HAIR', uploaded: 'Feb 12, 2026', tag: 'Beauty', status: 'oos', inv: { available: 0, hold: 0, oos: 1 }, buyPrice: 'A$24.50', sellPrice: 'A$45.00', profit: 'A$20.50', srcId: 'B08D3KZQ', ebayId: '281341800022', sold: 45, views: 890 },
+                    { id: 4, title: 'Comfort Office Chair Mats for Hardwood Floor Transparent Heavy Duty', image: 'https://placehold.co/100x100/1e293b/a78bfa?text=MAT', uploaded: 'Feb 10, 2026', tag: 'Home', status: 'live', inv: { available: 15, hold: 0, oos: 0 }, buyPrice: 'A$12.72', sellPrice: 'A$35.95', profit: 'A$23.23', srcId: 'B08D3LWR', ebayId: '281341800030', sold: 112, views: 1205 }
                 ],
                 toggleAll() {
                     if (this.selected.length === this.products.length) {
