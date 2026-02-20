@@ -17,163 +17,187 @@
             width: 100%; height: 4px; cursor: pointer;
             background: rgba(255,255,255,0.1); border-radius: 2px;
         }
+        [x-cloak] { display: none !important; }
     </style>
 {% endblock %}
 
+{% block body_attrs %}x-data="{ platform: 'ebay', isScraping: false }"{% endblock %}
+
 {% block content %}
-        <header class="h-16 flex items-center justify-between px-8 border-b border-white/5 bg-bg-dark/80 backdrop-blur-md sticky top-0 z-10">
-            <h1 class="text-xl font-bold text-white">Product Scraper</h1>
-        </header>
-
-        <div class="p-8 max-w-5xl mx-auto w-full space-y-12 pb-24">
-            <!-- Hero -->
-            <div class="text-center space-y-4">
-                <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-semibold">
-                    <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-                    Scale with Speed
-                </span>
-                <h2 class="text-4xl font-extrabold text-white">Product Scraper</h2>
-                <p class="text-slate-400 text-lg">Scale your dropshipping business to <span class="text-brand-light font-semibold">thousands of products</span> in minutes, not months.</p>
+    <header class="pt-8 px-8 pb-6 border-b border-white/5 bg-bg-dark/80 backdrop-blur-md sticky top-0 z-10">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-2xl font-bold text-white">Store Scraper</h1>
+                <p class="text-sm text-slate-400 mt-1">Extract thousands of products from competitor stores instantly.</p>
             </div>
+        </div>
+    </header>
 
-            <!-- Source Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-bg-card border border-white/5 rounded-2xl p-6 shadow-lg hover:border-white/10 transition-colors">
-                    <div class="flex items-center gap-3 mb-6">
-                        <div class="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center text-red-400 border border-red-500/20">
-                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
-                        </div>
-                        <h3 class="text-lg font-bold text-white">eBay</h3>
-                    </div>
-                    <p class="text-sm text-slate-400 mb-4">Scrape eBay store products</p>
-                    <label class="block text-xs font-medium text-slate-500 mb-1">Store URL</label>
-                    <input type="text" placeholder="e.g. https://www.ebay.com/str/discounttreasurehub" class="w-full bg-bg-dark border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand mb-4 transition-all placeholder-slate-600">
-                    <button class="w-full bg-brand hover:bg-brand-light text-white font-medium py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(139,92,246,0.3)]">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-                        Start Scraping
+    <div class="p-8 max-w-7xl mx-auto w-full space-y-8 pb-24">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Main Scrape Console -->
+            <div class="lg:col-span-2 bg-bg-card border border-white/5 rounded-2xl p-8 shadow-xl relative overflow-hidden">
+                <div class="absolute -top-32 -left-32 w-80 h-80 rounded-full mix-blend-screen filter blur-[100px] opacity-10 pointer-events-none transition-colors duration-500"
+                    :class="{
+                        'bg-red-500': platform === 'ebay',
+                        'bg-yellow-500': platform === 'amazon',
+                        'bg-orange-500': platform === 'aliexpress'
+                    }"></div>
+
+                <h3 class="text-lg font-bold text-white mb-6 relative z-10">Start New Scrape Job</h3>
+
+                <!-- Platform Toggle -->
+                <div class="flex p-1 bg-[#050810] rounded-lg mb-6 border border-white/10 shadow-inner relative z-10">
+                    <button @click="platform = 'ebay'" :class="platform === 'ebay' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-400 hover:text-white'" class="flex-1 py-2.5 text-sm font-bold rounded-md transition-all flex items-center justify-center gap-2">
+                        eBay
+                    </button>
+                    <button @click="platform = 'amazon'" :class="platform === 'amazon' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-400 hover:text-white'" class="flex-1 py-2.5 text-sm font-bold rounded-md transition-all flex items-center justify-center gap-2">
+                        Amazon
+                    </button>
+                    <button @click="platform = 'aliexpress'" :class="platform === 'aliexpress' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-400 hover:text-white'" class="flex-1 py-2.5 text-sm font-bold rounded-md transition-all flex items-center justify-center gap-2">
+                        AliExpress
                     </button>
                 </div>
 
-                <div class="bg-bg-card border border-white/5 rounded-2xl p-6 shadow-lg hover:border-white/10 transition-colors">
-                    <div class="flex items-center gap-3 mb-6">
-                        <div class="w-10 h-10 rounded-lg bg-yellow-500/10 flex items-center justify-center text-yellow-400 border border-yellow-500/20">
-                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
+                <!-- URL Input -->
+                <div class="mb-6 relative z-10">
+                    <label class="block text-sm font-medium text-slate-300 mb-2">Store or Seller URL</label>
+                    <div class="relative">
+                        <div class="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-500">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
                         </div>
-                        <h3 class="text-lg font-bold text-white">Amazon</h3>
+                        <input type="text"
+                            :placeholder="
+                                platform === 'ebay' ? 'https://www.ebay.com/str/discounttreasurehub' :
+                                platform === 'amazon' ? 'https://www.amazon.com/s?seller=...' :
+                                'https://www.aliexpress.com/store/...'
+                            "
+                            class="w-full bg-[#050810] border border-white/10 rounded-xl pl-12 pr-4 py-3.5 text-sm text-white focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all placeholder-slate-600 shadow-inner">
                     </div>
-                    <p class="text-sm text-slate-400 mb-4">Scrape Amazon seller products</p>
-                    <label class="block text-xs font-medium text-slate-500 mb-1">Seller URL</label>
-                    <input type="text" placeholder="https://www.amazon.com/s?seller=..." class="w-full bg-bg-dark border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand mb-4 transition-all placeholder-slate-600">
-                    <button class="w-full bg-brand hover:bg-brand-light text-white font-medium py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(139,92,246,0.3)]">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-                        Start Scraping
+                </div>
+
+                <!-- Submit + Cost -->
+                <div class="flex items-center gap-4 relative z-10">
+                    <button
+                        @click="isScraping = true; setTimeout(() => { isScraping = false; $store.toast.show('Scrape job started!', 'success') }, 1500)"
+                        :disabled="isScraping"
+                        class="flex-1 bg-brand hover:bg-brand-light disabled:bg-brand/50 disabled:cursor-not-allowed text-white font-bold py-3.5 rounded-xl transition-all shadow-[0_0_20px_rgba(139,92,246,0.3)] hover:shadow-[0_0_30px_rgba(139,92,246,0.5)] disabled:shadow-none flex items-center justify-center gap-2 relative overflow-hidden">
+                        <div class="flex items-center gap-2 transition-opacity duration-200" :class="isScraping ? 'opacity-0' : 'opacity-100'">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                            Start Scraping Store
+                        </div>
+                        <div class="absolute inset-0 flex items-center justify-center gap-2 transition-opacity duration-200" :class="isScraping ? 'opacity-100' : 'opacity-0'">
+                            <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                            <span>Initializing Bot...</span>
+                        </div>
                     </button>
-                </div>
-
-                <div class="bg-bg-card border border-white/5 rounded-2xl p-6 shadow-lg hover:border-white/10 transition-colors">
-                    <div class="flex items-center gap-3 mb-6">
-                        <div class="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center text-orange-400 border border-orange-500/20">
-                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                        </div>
-                        <h3 class="text-lg font-bold text-white">AliExpress</h3>
+                    <div class="text-sm text-slate-400 font-medium px-4">
+                        Cost: <span class="text-white font-bold">1 Credit</span> / Item
                     </div>
-                    <p class="text-sm text-slate-400 mb-4">Scrape AliExpress store products</p>
-                    <label class="block text-xs font-medium text-slate-500 mb-1">Store URL</label>
-                    <input type="text" placeholder="https://www.aliexpress.com/store/..." class="w-full bg-bg-dark border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand mb-4 transition-all placeholder-slate-600">
-                    <button class="w-full bg-brand hover:bg-brand-light text-white font-medium py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(139,92,246,0.3)]">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-                        Start Scraping
-                    </button>
-                </div>
-            </div>
-
-            <!-- Info Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-bg-card border border-white/5 rounded-2xl p-8 shadow-lg">
-                    <div class="flex items-center gap-3 mb-4">
-                        <div class="w-8 h-8 rounded bg-blue-500/10 flex items-center justify-center text-blue-400">
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
-                        </div>
-                        <h3 class="text-lg font-bold text-white">What It Does</h3>
-                    </div>
-                    <p class="text-slate-400 text-sm leading-relaxed mb-4">Simply paste any eBay or Amazon store URL, and our intelligent bot will automatically scrape every single product from that store.</p>
-                    <p class="text-slate-400 text-sm leading-relaxed">You'll receive a comprehensive list of product links that can be directly uploaded to our Import section for quick filtering and cataloging.</p>
-                </div>
-
-                <div class="bg-bg-card border border-white/5 rounded-2xl p-8 shadow-lg">
-                    <div class="flex items-center gap-3 mb-4">
-                        <div class="w-8 h-8 rounded bg-brand/10 flex items-center justify-center text-brand-light">
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
-                        </div>
-                        <h3 class="text-lg font-bold text-white">Why It's Useful</h3>
-                    </div>
-                    <ul class="space-y-4 text-sm text-slate-400">
-                        <li><strong class="text-slate-200">Save countless hours</strong> - No more manually copying product links one by one.</li>
-                        <li><strong class="text-slate-200">Scale rapidly</strong> - Build a catalog of thousands of products in minutes instead of weeks.</li>
-                        <li><strong class="text-slate-200">Stay competitive</strong> - Quickly replicate successful stores and get to market faster.</li>
-                    </ul>
                 </div>
             </div>
 
-            <!-- How It Works + Buy Credits -->
-            <div class="space-y-6">
-                <div class="bg-bg-card border border-white/5 rounded-2xl p-8 shadow-lg">
-                    <div class="flex items-center gap-3 mb-8">
-                        <svg class="w-5 h-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                        <h3 class="text-lg font-bold text-white">How It Works</h3>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
-                        <div class="relative z-10">
-                            <div class="w-12 h-12 rounded-xl bg-blue-500/20 text-blue-400 font-bold text-xl flex items-center justify-center mb-4 border border-blue-500/30">1</div>
-                            <h4 class="text-white font-bold mb-2">Enter Store URL</h4>
-                            <p class="text-sm text-slate-400">Paste the eBay or Amazon store URL you want to scrape.</p>
-                        </div>
-                        <div class="relative z-10">
-                            <div class="w-12 h-12 rounded-xl bg-brand/20 text-brand-light font-bold text-xl flex items-center justify-center mb-4 border border-brand/30">2</div>
-                            <h4 class="text-white font-bold mb-2">Bot Scrapes Products</h4>
-                            <p class="text-sm text-slate-400">Our bot automatically extracts all product links from the store.</p>
-                        </div>
-                        <div class="relative z-10">
-                            <div class="w-12 h-12 rounded-xl bg-purple-500/20 text-purple-400 font-bold text-xl flex items-center justify-center mb-4 border border-purple-500/30">3</div>
-                            <h4 class="text-white font-bold mb-2">Import & Filter</h4>
-                            <p class="text-sm text-slate-400">Upload the list to Import section and apply your filter requirements.</p>
-                        </div>
+            <!-- Credits Sidebar -->
+            <div class="bg-gradient-to-br from-bg-card to-bg-dark border border-white/5 rounded-2xl p-8 shadow-lg flex flex-col" x-data="{ credits: 1000, pricePerCredit: 0.10 }">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-bold text-white">Scrape Credits</h3>
+                    <div class="w-10 h-10 rounded-full bg-brand/10 text-brand-light flex items-center justify-center border border-brand/20">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
                     </div>
                 </div>
-
-                <!-- Buy Credits -->
-                <div class="bg-gradient-to-br from-bg-card to-bg-dark border border-brand/30 rounded-2xl p-8 shadow-[0_0_30px_rgba(139,92,246,0.1)] relative overflow-hidden" x-data="{ credits: 1000, pricePerCredit: 0.10 }">
-                    <div class="absolute top-0 right-0 p-8 opacity-5 pointer-events-none">
-                        <svg class="w-48 h-48 text-brand" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.91s4.18 1.39 4.18 3.91c-.01 1.83-1.38 2.83-3.12 3.16z"/></svg>
+                <div class="mb-8">
+                    <p class="text-xs text-slate-500 font-medium uppercase tracking-wider mb-1">Available Balance</p>
+                    <h4 class="text-4xl font-black text-white">12,450</h4>
+                </div>
+                <div class="flex-1 flex flex-col justify-end border-t border-white/10 pt-6">
+                    <div class="flex justify-between text-sm mb-2">
+                        <span class="text-slate-400">Buy <strong class="text-white" x-text="credits"></strong> credits</span>
+                        <span class="text-brand-light font-bold">$<span x-text="(credits * pricePerCredit).toFixed(2)"></span></span>
                     </div>
-                    <div class="flex items-center gap-3 mb-2 relative z-10">
-                        <div class="w-8 h-8 rounded bg-green-500/10 flex items-center justify-center text-green-400">
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                        </div>
-                        <h3 class="text-xl font-bold text-white">Buy Credits</h3>
-                    </div>
-                    <p class="text-sm text-slate-400 mb-8 relative z-10">1 credit = 1 product scraped • $0.10 per credit</p>
-                    <div class="flex flex-col md:flex-row items-end gap-6 mb-8 relative z-10">
-                        <div class="w-full">
-                            <label class="block text-xs font-medium text-slate-500 mb-2">Number of Credits</label>
-                            <input type="number" x-model="credits" class="w-full bg-bg-dark border border-white/10 rounded-lg px-4 py-3 text-lg font-bold text-white focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand mb-4">
-                            <input type="range" x-model="credits" min="100" max="10000" step="100" class="w-full appearance-none bg-transparent">
-                        </div>
-                        <div class="text-right shrink-0 min-w-[150px]">
-                            <p class="text-xs text-slate-500 mb-1">Total Price</p>
-                            <div class="text-4xl font-extrabold text-brand-light">$<span x-text="(credits * pricePerCredit).toFixed(2)"></span></div>
-                            <p class="text-xs text-slate-400 mt-1">(<span x-text="credits"></span> products)</p>
-                        </div>
-                    </div>
-                    <button class="w-full bg-brand hover:bg-brand-light text-white font-bold py-4 rounded-xl transition-all shadow-[0_0_20px_rgba(139,92,246,0.4)] hover:shadow-[0_0_30px_rgba(139,92,246,0.6)] relative z-10">
-                        Purchase <span x-text="credits"></span> Credits for $<span x-text="(credits * pricePerCredit).toFixed(2)"></span>
+                    <input type="range" x-model="credits" min="100" max="10000" step="100" class="w-full appearance-none bg-transparent mb-4">
+                    <button class="w-full bg-white/10 hover:bg-white/20 text-white font-bold py-3 rounded-lg transition-colors border border-white/5 text-sm">
+                        Top Up Balance
                     </button>
-                </div>
-
-                <div class="text-center p-6 bg-white/[0.02] border border-white/5 rounded-xl text-sm text-slate-400 mt-6">
-                    Once scraping is complete, you'll receive a downloadable file with all product links. Take this file to the <a href="/import" class="text-brand hover:text-brand-light font-medium">Import section</a> to filter and add products to your catalog based on your requirements.
                 </div>
             </div>
         </div>
-    
+
+        <!-- Scrape Jobs & History -->
+        <div class="bg-bg-card border border-white/5 rounded-2xl shadow-xl overflow-hidden">
+            <div class="p-6 border-b border-white/5 flex items-center justify-between">
+                <h3 class="text-lg font-bold text-white">Scrape Jobs & History</h3>
+                <button class="text-sm text-slate-400 hover:text-white transition-colors flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                    Refresh
+                </button>
+            </div>
+            <table class="w-full text-left border-collapse">
+                <thead class="bg-[#050810]/50 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                    <tr>
+                        <th class="py-4 px-6">Store URL / Target</th>
+                        <th class="py-4 px-6">Platform</th>
+                        <th class="py-4 px-6">Status & Progress</th>
+                        <th class="py-4 px-6">Items Found</th>
+                        <th class="py-4 px-6 text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/5 text-sm">
+                    <tr class="hover:bg-white/[0.02] transition-colors">
+                        <td class="py-4 px-6">
+                            <p class="text-white font-medium truncate max-w-[250px]">ebay.com/str/discounttreasurehub</p>
+                            <p class="text-xs text-slate-500 font-mono mt-0.5">Started 2 mins ago</p>
+                        </td>
+                        <td class="py-4 px-6"><span class="bg-red-500/10 text-red-400 border border-red-500/20 px-2 py-0.5 rounded text-[10px] font-bold">eBay</span></td>
+                        <td class="py-4 px-6">
+                            <div class="flex items-center gap-3">
+                                <div class="flex-1 h-2 bg-white/5 rounded-full overflow-hidden">
+                                    <div class="h-full bg-brand rounded-full animate-pulse" style="width: 45%"></div>
+                                </div>
+                                <span class="text-xs font-bold text-brand-light">45%</span>
+                            </div>
+                            <p class="text-[10px] text-slate-400 mt-1">Extracting page 12 of 34...</p>
+                        </td>
+                        <td class="py-4 px-6 text-white font-mono">1,402</td>
+                        <td class="py-4 px-6 text-right">
+                            <button class="text-xs font-bold text-red-400 hover:text-red-300 transition-colors">Cancel</button>
+                        </td>
+                    </tr>
+                    <tr class="hover:bg-white/[0.02] transition-colors">
+                        <td class="py-4 px-6">
+                            <p class="text-white font-medium truncate max-w-[250px]">amazon.com/s?seller=A294P4X9E...</p>
+                            <p class="text-xs text-slate-500 font-mono mt-0.5">Completed yesterday</p>
+                        </td>
+                        <td class="py-4 px-6"><span class="bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 px-2 py-0.5 rounded text-[10px] font-bold">Amazon</span></td>
+                        <td class="py-4 px-6">
+                            <span class="text-emerald-400 text-xs font-bold flex items-center gap-1.5">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                                Complete
+                            </span>
+                        </td>
+                        <td class="py-4 px-6 text-white font-mono">3,850</td>
+                        <td class="py-4 px-6 text-right">
+                            <a href="/import" class="text-xs font-bold bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg transition-colors border border-white/5">Send to Import</a>
+                        </td>
+                    </tr>
+                    <tr class="hover:bg-white/[0.02] transition-colors">
+                        <td class="py-4 px-6">
+                            <p class="text-white font-medium truncate max-w-[250px]">aliexpress.com/store/110156...</p>
+                            <p class="text-xs text-slate-500 font-mono mt-0.5">Completed Jan 14</p>
+                        </td>
+                        <td class="py-4 px-6"><span class="bg-orange-500/10 text-orange-400 border border-orange-500/20 px-2 py-0.5 rounded text-[10px] font-bold">AliExpress</span></td>
+                        <td class="py-4 px-6">
+                            <span class="text-emerald-400 text-xs font-bold flex items-center gap-1.5">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                                Complete
+                            </span>
+                        </td>
+                        <td class="py-4 px-6 text-white font-mono">512</td>
+                        <td class="py-4 px-6 text-right">
+                            <a href="/import" class="text-xs font-bold bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg transition-colors border border-white/5">Send to Import</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 {% endblock %}
