@@ -12,6 +12,8 @@
     </style>
 {% endblock %}
 
+{% block body_attrs %}x-data="{ activeTab: 'pricing', showBuyerModal: false, modalTab: 'account' }"{% endblock %}
+
 {% block content %}
         <header class="pt-8 px-8 pb-6 bg-bg-dark/80 backdrop-blur-md sticky top-0 z-10">
             <h1 class="text-2xl font-bold text-white">Settings</h1>
