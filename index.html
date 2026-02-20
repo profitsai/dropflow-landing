@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DropFlow — Bulk List to eBay from AliExpress &amp; Amazon</title>
+<meta name="description" content="DropFlow is the Chrome extension that scrapes AliExpress & Amazon products and bulk-lists them on eBay with smart pricing, AI descriptions, and 24/7 stock monitoring.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --cyan: #00e5ff;
+  --cyan-dim: #00e5ff60;
+  --cyan-glow: #00e5ff30;
+  --blue: #0066ff;
+  --bg: #060608;
+  --bg2: #0c0c10;
+  --card: #0f0f14;
+  --card-border: #1a1a24;
+  --text: #e8e8ec;
+  --text-dim: #7a7a8e;
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'Space Grotesk', sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  cursor: default;
+}
+
+/* Grain overlay */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px;
+}
+
+/* Custom cursor glow */
+#cursor-glow {
+  position: fixed;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  background: radial-gradient(circle, var(--cyan-glow) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  mix-blend-mode: screen;
+}
+
+/* Animated background mesh */
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.hero-bg .orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.4;
+  animation: orbFloat 20s ease-in-out infinite;
+}
+
+.hero-bg .orb:nth-child(1) {
+  width: 600px; height: 600px;
+  background: var(--cyan);
+  top: -20%; left: -10%;
+  opacity: 0.15;
+  animation-duration: 25s;
+}
+
+.hero-bg .orb:nth-child(2) {
+  width: 400px; height: 400px;
+  background: var(--blue);
+  bottom: -10%; right: -5%;
+  opacity: 0.12;
+  animation-duration: 30s;
+  animation-delay: -5s;
+}
+
+.hero-bg .orb:nth-child(3) {
+  width: 300px; height: 300px;
+  background: #00ffaa;
+  top: 40%; right: 20%;
+  opacity: 0.07;
+  animation-duration: 22s;
+  animation-delay: -10s;
+}
+
+@keyframes orbFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(60px, -40px) scale(1.1); }
+  66% { transform: translate(-40px, 30px) scale(0.95); }
+}
+
+/* Grid lines background */
+.grid-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image:
+    linear-gradient(var(--card-border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--card-border) 1px, transparent 1px);
+  background-size: 80px 80px;
+  opacity: 0.15;
+  mask-image: radial-gradient(ellipse 60% 50% at 50% 40%, black 20%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse 60% 50% at 50% 40%, black 20%, transparent 70%);
+}
+
+/* Particles */
+.particles {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: var(--cyan);
+  border-radius: 50%;
+  opacity: 0;
+  animation: particleDrift linear infinite;
+}
+
+@keyframes particleDrift {
+  0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+  10% { opacity: 0.6; }
+  90% { opacity: 0.6; }
+  100% { transform: translateY(-10vh) translateX(40px); opacity: 0; }
+}
+
+/* Navigation */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  padding: 20px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  background: rgba(6, 6, 8, 0.7);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.3s;
+}
+
+nav.scrolled { border-bottom-color: var(--card-border); }
+
+.nav-logo {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.5rem;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-logo .logo-icon {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, var(--cyan), var(--blue));
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  box-shadow: 0 0 20px var(--cyan-dim);
+}
+
+.nav-links {
+  display: flex;
+  gap: 32px;
+  list-style: none;
+}
+
+.nav-links a {
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.nav-links a:hover { color: var(--text); }
+
+.nav-cta {
+  padding: 10px 24px;
+  background: transparent;
+  border: 1px solid var(--cyan);
+  color: var(--cyan);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.85rem;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.nav-cta:hover {
+  background: var(--cyan);
+  color: var(--bg);
+  box-shadow: 0 0 30px var(--cyan-dim);
+}
+
+/* Sections */
+section { position: relative; }
+
+/* HERO */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 120px 24px 80px;
+  position: relative;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  border: 1px solid var(--card-border);
+  border-radius: 100px;
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  margin-bottom: 40px;
+  backdrop-filter: blur(10px);
+  background: rgba(15, 15, 20, 0.6);
+}
+
+.hero-badge .dot {
+  width: 6px;
+  height: 6px;
+  background: #00ff88;
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+.hero h1 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(3rem, 8vw, 7rem);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  max-width: 900px;
+  margin-bottom: 32px;
+  position: relative;
+  z-index: 2;
+}
+
+.hero h1 .glow-text {
+  background: linear-gradient(135deg, var(--cyan) 0%, #00aaff 50%, var(--cyan) 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 4s linear infinite;
+  filter: drop-shadow(0 0 40px var(--cyan-glow));
+}
+
+@keyframes shimmer {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+.hero p {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  color: var(--text-dim);
+  max-width: 560px;
+  line-height: 1.7;
+  margin-bottom: 48px;
+  z-index: 2;
+  position: relative;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 16px;
+  z-index: 2;
+  position: relative;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.btn-primary {
+  padding: 16px 40px;
+  background: var(--cyan);
+  color: var(--bg);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.95rem;
+  border: none;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 100px;
+  background: var(--cyan);
+  filter: blur(20px);
+  opacity: 0.4;
+  z-index: -1;
+  transition: opacity 0.3s;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 50px var(--cyan-dim);
+}
+
+.btn-primary:hover::before { opacity: 0.7; }
+
+.btn-secondary {
+  padding: 16px 40px;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: 1px solid var(--card-border);
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.btn-secondary:hover {
+  border-color: var(--text-dim);
+  transform: translateY(-2px);
+}
+
+/* Floating mockup */
+.hero-mockup {
+  position: relative;
+  z-index: 2;
+  margin-top: 60px;
+  perspective: 1000px;
+}
+
+.mockup-window {
+  width: min(800px, 90vw);
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.03),
+    0 20px 80px rgba(0,0,0,0.6),
+    0 0 80px var(--cyan-glow);
+  transform: rotateX(4deg);
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: mockupFloat 6s ease-in-out infinite;
+}
+
+@keyframes mockupFloat {
+  0%, 100% { transform: rotateX(4deg) translateY(0); }
+  50% { transform: rotateX(2deg) translateY(-12px); }
+}
+
+.mockup-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 18px;
+  background: rgba(255,255,255,0.02);
+  border-bottom: 1px solid var(--card-border);
+}
+
+.mockup-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--card-border);
+}
+
+.mockup-dot:nth-child(1) { background: #ff5f57; }
+.mockup-dot:nth-child(2) { background: #ffbd2e; }
+.mockup-dot:nth-child(3) { background: #28ca41; }
+
+.mockup-bar .url {
+  flex: 1;
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  background: rgba(255,255,255,0.03);
+  padding: 6px 16px;
+  border-radius: 6px;
+  margin-left: 8px;
+}
+
+.mockup-content {
+  padding: 24px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  min-height: 300px;
+}
+
+.mock-card {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mock-img {
+  height: 100px;
+  background: linear-gradient(135deg, var(--card-border), rgba(0,229,255,0.05));
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+}
+
+.mock-title {
+  height: 10px;
+  background: var(--card-border);
+  border-radius: 4px;
+  width: 80%;
+}
+
+.mock-price {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--cyan);
+}
+
+.mock-btn {
+  padding: 8px;
+  background: var(--cyan);
+  border-radius: 6px;
+  text-align: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--bg);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Scroll indicator */
+.scroll-indicator {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-dim);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  animation: fadeInUp 1s 2s both;
+}
+
+.scroll-line {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, var(--cyan), transparent);
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+
+@keyframes scrollPulse {
+  0%, 100% { opacity: 1; transform: scaleY(1); }
+  50% { opacity: 0.3; transform: scaleY(0.6); }
+}
+
+/* Logos section */
+.logos-section {
+  padding: 80px 24px;
+  text-align: center;
+  border-top: 1px solid var(--card-border);
+  border-bottom: 1px solid var(--card-border);
+}
+
+.logos-section p {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--text-dim);
+  margin-bottom: 40px;
+}
+
+.logos-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 60px;
+  flex-wrap: wrap;
+  opacity: 0.4;
+}
+
+.logo-item {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+/* Section headers */
+.section-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--cyan);
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-bottom: 20px;
+}
+
+.section-desc {
+  color: var(--text-dim);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  max-width: 560px;
+}
+
+/* How it Works */
+.how-section {
+  padding: 140px 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.how-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  margin-top: 80px;
+}
+
+.step-card {
+  position: relative;
+  padding: 40px 32px;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+.step-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.step-card:hover {
+  transform: translateY(-8px);
+  border-color: var(--cyan-dim);
+  box-shadow: 0 20px 60px rgba(0, 229, 255, 0.08);
+}
+
+.step-card:hover::before { opacity: 1; }
+
+.step-number {
+  font-family: var(--font-display);
+  font-size: 4rem;
+  font-weight: 800;
+  color: var(--cyan);
+  opacity: 0.15;
+  line-height: 1;
+  margin-bottom: 20px;
+}
+
+.step-icon {
+  width: 56px;
+  height: 56px;
+  background: rgba(0, 229, 255, 0.08);
+  border: 1px solid rgba(0, 229, 255, 0.15);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-bottom: 24px;
+}
+
+.step-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  letter-spacing: -0.01em;
+}
+
+.step-card p {
+  color: var(--text-dim);
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+/* Features */
+.features-section {
+  padding: 140px 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  margin-top: 80px;
+}
+
+.feature-card {
+  padding: 40px 36px;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.feature-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  padding: 1px;
+  background: linear-gradient(135deg, transparent 40%, var(--cyan-dim));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  background: #111118;
+}
+
+.feature-card:hover::after { opacity: 1; }
+
+.feature-card.featured {
+  grid-column: span 2;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: center;
+}
+
+.feature-icon {
+  width: 48px;
+  height: 48px;
+  background: rgba(0, 229, 255, 0.06);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  margin-bottom: 24px;
+  border: 1px solid rgba(0, 229, 255, 0.1);
+}
+
+.feature-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  letter-spacing: -0.01em;
+}
+
+.feature-card p {
+  color: var(--text-dim);
+  line-height: 1.65;
+  font-size: 0.95rem;
+}
+
+.feature-visual {
+  height: 200px;
+  background: linear-gradient(135deg, rgba(0,229,255,0.03), rgba(0,102,255,0.05));
+  border-radius: 12px;
+  border: 1px solid var(--card-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.flow-arrow {
+  font-size: 1.5rem;
+  color: var(--cyan);
+  animation: arrowPulse 2s ease-in-out infinite;
+}
+
+@keyframes arrowPulse {
+  0%, 100% { opacity: 1; transform: translateX(0); }
+  50% { opacity: 0.4; transform: translateX(6px); }
+}
+
+.flow-node {
+  padding: 14px 20px;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.flow-node .emoji { font-size: 1.5rem; display: block; margin-bottom: 6px; }
+
+/* Stats */
+.stats-section {
+  padding: 120px 24px;
+  border-top: 1px solid var(--card-border);
+  border-bottom: 1px solid var(--card-border);
+  background: linear-gradient(180deg, var(--bg), var(--bg2), var(--bg));
+}
+
+.stats-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 40px;
+  margin-top: 80px;
+}
+
+.stat-item {
+  position: relative;
+}
+
+.stat-number {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 800;
+  color: var(--cyan);
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin-bottom: 8px;
+  filter: drop-shadow(0 0 20px var(--cyan-glow));
+}
+
+.stat-label {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* Boost section */
+.boost-section {
+  padding: 140px 24px;
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.boost-features {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 48px;
+}
+
+.boost-pill {
+  padding: 14px 28px;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 100px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s;
+}
+
+.boost-pill:hover {
+  border-color: var(--cyan-dim);
+  box-shadow: 0 0 30px rgba(0, 229, 255, 0.06);
+  transform: translateY(-2px);
+}
+
+.boost-pill .icon {
+  font-size: 1.1rem;
+}
+
+/* CTA */
+.cta-section {
+  padding: 160px 24px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-section .cta-glow {
+  position: absolute;
+  width: 800px;
+  height: 400px;
+  background: radial-gradient(ellipse, var(--cyan-glow), transparent 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.cta-section .section-title {
+  position: relative;
+  z-index: 1;
+  max-width: 700px;
+  margin: 0 auto 20px;
+}
+
+.cta-section .section-desc {
+  margin: 0 auto 48px;
+  position: relative;
+  z-index: 1;
+}
+
+.cta-section .hero-buttons {
+  position: relative;
+  z-index: 1;
+}
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--card-border);
+  padding: 60px 24px 40px;
+}
+
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 60px;
+}
+
+.footer-brand p {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin-top: 16px;
+  max-width: 280px;
+}
+
+.footer-col h4 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 20px;
+  color: var(--text);
+}
+
+.footer-col a {
+  display: block;
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 0.9rem;
+  margin-bottom: 12px;
+  transition: color 0.2s;
+}
+
+.footer-col a:hover { color: var(--cyan); }
+
+.footer-bottom {
+  max-width: 1200px;
+  margin: 40px auto 0;
+  padding-top: 24px;
+  border-top: 1px solid var(--card-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+
+.social-links {
+  display: flex;
+  gap: 20px;
+}
+
+.social-links a {
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 1.1rem;
+  transition: color 0.2s;
+}
+
+.social-links a:hover { color: var(--cyan); }
+
+/* Animations */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+.reveal-delay-5 { transition-delay: 0.5s; }
+.reveal-delay-6 { transition-delay: 0.6s; }
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hero-badge, .hero h1, .hero p, .hero-buttons, .hero-mockup {
+  animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.hero-badge { animation-delay: 0.1s; }
+.hero h1 { animation-delay: 0.25s; }
+.hero p { animation-delay: 0.4s; }
+.hero-buttons { animation-delay: 0.55s; }
+.hero-mockup { animation-delay: 0.7s; }
+
+/* Mobile menu */
+.mobile-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+}
+
+.mobile-toggle span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--text);
+  margin: 5px 0;
+  transition: all 0.3s;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .how-steps { grid-template-columns: 1fr; max-width: 500px; margin-left: auto; margin-right: auto; }
+  .features-grid { grid-template-columns: 1fr; }
+  .feature-card.featured { grid-column: span 1; grid-template-columns: 1fr; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .footer-inner { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 768px) {
+  nav { padding: 16px 20px; }
+  .nav-links { display: none; }
+  .mobile-toggle { display: block; }
+  .hero { padding: 100px 20px 60px; }
+  .mockup-content { grid-template-columns: 1fr; }
+  .mock-card:nth-child(3) { display: none; }
+  .stats-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+  .footer-inner { grid-template-columns: 1fr; gap: 32px; }
+  .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+  .boost-features { flex-direction: column; align-items: center; }
+  .how-steps { grid-template-columns: 1fr; }
+  .feature-visual { display: none; }
+}
+
+@media (max-width: 480px) {
+  .hero h1 { font-size: 2.5rem; }
+  .stats-grid { grid-template-columns: 1fr; }
+  .hero-buttons { flex-direction: column; width: 100%; }
+  .btn-primary, .btn-secondary { width: 100%; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<div id="cursor-glow"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="logo-icon">⚡</div>
+    DropFlow
+  </a>
+  <ul class="nav-links">
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#stats">Results</a></li>
+    <li><a href="#boost">Boost</a></li>
+  </ul>
+  <button class="nav-cta" onclick="window.open('#','_blank')">Install Free</button>
+  <button class="mobile-toggle" aria-label="Menu" onclick="this.classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="orb"></div>
+    <div class="orb"></div>
+    <div class="orb"></div>
+  </div>
+  <div class="grid-bg"></div>
+  <div class="particles" id="particles"></div>
+
+  <div class="hero-badge">
+    <span class="dot"></span>
+    Chrome Extension — Now in Beta
+  </div>
+
+  <h1>List Products<br><span class="glow-text">10× Faster</span></h1>
+
+  <p>Scrape AliExpress &amp; Amazon. Auto-fill eBay listings with smart pricing, AI descriptions, and variation mapping. One click.</p>
+
+  <div class="hero-buttons">
+    <button class="btn-primary" onclick="window.open('#','_blank')">Add to Chrome — It's Free</button>
+    <button class="btn-secondary" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})">See How It Works</button>
+  </div>
+
+  <div class="hero-mockup">
+    <div class="mockup-window">
+      <div class="mockup-bar">
+        <div class="mockup-dot"></div>
+        <div class="mockup-dot"></div>
+        <div class="mockup-dot"></div>
+        <div class="url">ebay.com/sell/create</div>
+      </div>
+      <div class="mockup-content">
+        <div class="mock-card">
+          <div class="mock-img">🎧</div>
+          <div class="mock-title"></div>
+          <div class="mock-price">$24.99</div>
+          <div class="mock-btn">List on eBay →</div>
+        </div>
+        <div class="mock-card">
+          <div class="mock-img">⌚</div>
+          <div class="mock-title"></div>
+          <div class="mock-price">$39.99</div>
+          <div class="mock-btn">List on eBay →</div>
+        </div>
+        <div class="mock-card">
+          <div class="mock-img">📱</div>
+          <div class="mock-title"></div>
+          <div class="mock-price">$18.99</div>
+          <div class="mock-btn">List on eBay →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-indicator">
+    <div class="scroll-line"></div>
+    Scroll
+  </div>
+</section>
+
+<!-- LOGOS -->
+<section class="logos-section">
+  <p>Works with the platforms you already use</p>
+  <div class="logos-row">
+    <span class="logo-item">AliExpress</span>
+    <span class="logo-item">Amazon</span>
+    <span class="logo-item">eBay</span>
+    <span class="logo-item">Chrome</span>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how" class="how-section">
+  <div class="reveal">
+    <div class="section-label">How It Works</div>
+    <div class="section-title">Three steps.<br>Zero friction.</div>
+    <div class="section-desc">From product discovery to live eBay listing in under 60 seconds.</div>
+  </div>
+
+  <div class="how-steps">
+    <div class="step-card reveal reveal-delay-1">
+      <div class="step-number">01</div>
+      <div class="step-icon">🔍</div>
+      <h3>Find a Product</h3>
+      <p>Browse AliExpress or Amazon as you normally would. DropFlow detects product pages and extracts everything — title, images, variations, specs, and pricing.</p>
+    </div>
+    <div class="step-card reveal reveal-delay-2">
+      <div class="step-number">02</div>
+      <div class="step-icon">⚡</div>
+      <h3>Auto-Fill eBay</h3>
+      <p>One click opens eBay's listing form pre-filled with optimized data. Smart markup pricing, AI-written descriptions, and correct variation mapping — Color × Size, done.</p>
+    </div>
+    <div class="step-card reveal reveal-delay-3">
+      <div class="step-number">03</div>
+      <div class="step-icon">🚀</div>
+      <h3>List &amp; Monitor</h3>
+      <p>Hit publish and let DropFlow handle the rest. 24/7 stock and price tracking, automatic re-ordering when items sell, and smart alerts for out-of-stock items.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features" class="features-section">
+  <div class="reveal">
+    <div class="section-label">Features</div>
+    <div class="section-title">Built for serious sellers.</div>
+    <div class="section-desc">Every feature is designed to eliminate manual work and scale your eBay business.</div>
+  </div>
+
+  <div class="features-grid">
+    <div class="feature-card featured reveal reveal-delay-1">
+      <div>
+        <div class="feature-icon">🔗</div>
+        <h3>One-Click Product Import</h3>
+        <p>Scrape complete product data from AliExpress or Amazon — images, titles, descriptions, pricing, and every variation. DropFlow handles the heavy lifting so you can focus on selling.</p>
+      </div>
+      <div class="feature-visual">
+        <div class="flow-node"><span class="emoji">🛒</span>AliExpress</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-node"><span class="emoji">⚡</span>DropFlow</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-node"><span class="emoji">📦</span>eBay</div>
+      </div>
+    </div>
+
+    <div class="feature-card reveal reveal-delay-2">
+      <div class="feature-icon">🤖</div>
+      <h3>AI Descriptions</h3>
+      <p>Generate compelling, SEO-optimized eBay descriptions automatically. No more copy-pasting broken translations from suppliers.</p>
+    </div>
+
+    <div class="feature-card reveal reveal-delay-3">
+      <div class="feature-icon">💰</div>
+      <h3>Smart Pricing Engine</h3>
+      <p>Set markup multipliers per product or globally. Per-variant pricing lets you maximize margin on every Color × Size combination.</p>
+    </div>
+
+    <div class="feature-card reveal reveal-delay-4">
+      <div class="feature-icon">📊</div>
+      <h3>Stock &amp; Price Tracker</h3>
+      <p>24/7 monitoring detects supplier price changes and out-of-stock items. Auto-adjust your eBay prices or get instant alerts.</p>
+    </div>
+
+    <div class="feature-card reveal reveal-delay-5">
+      <div class="feature-icon">🛒</div>
+      <h3>Auto-Order Fulfillment</h3>
+      <p>When an item sells on eBay, DropFlow can auto-order from the supplier. True hands-free dropshipping automation.</p>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section id="stats" class="stats-section">
+  <div class="stats-inner">
+    <div class="reveal">
+      <div class="section-label">By The Numbers</div>
+      <div class="section-title">Results that speak.</div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-item reveal reveal-delay-1">
+        <div class="stat-number" data-target="10" data-suffix="×">0×</div>
+        <div class="stat-label">Faster Listing Speed</div>
+      </div>
+      <div class="stat-item reveal reveal-delay-2">
+        <div class="stat-number" data-target="1" data-suffix="-Click">0</div>
+        <div class="stat-label">Product Import</div>
+      </div>
+      <div class="stat-item reveal reveal-delay-3">
+        <div class="stat-number" data-target="24" data-suffix="/7">0</div>
+        <div class="stat-label">Stock Monitoring</div>
+      </div>
+      <div class="stat-item reveal reveal-delay-4">
+        <div class="stat-number" data-target="100" data-suffix="%">0%</div>
+        <div class="stat-label">Free To Start</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BOOST -->
+<section id="boost" class="boost-section">
+  <div class="reveal">
+    <div class="section-label">Power Move</div>
+    <div class="section-title">Boost My Listings</div>
+    <div class="section-desc" style="margin: 0 auto;">Not just listing — DropFlow helps you scale with bulk operations that keep your store competitive.</div>
+  </div>
+
+  <div class="boost-features">
+    <div class="boost-pill reveal reveal-delay-1"><span class="icon">🔄</span> Bulk Revise Listings</div>
+    <div class="boost-pill reveal reveal-delay-2"><span class="icon">🏷️</span> Send Offers to Watchers</div>
+    <div class="boost-pill reveal reveal-delay-3"><span class="icon">📋</span> Relist Ended Items</div>
+    <div class="boost-pill reveal reveal-delay-4"><span class="icon">💸</span> Markdown Manager</div>
+    <div class="boost-pill reveal reveal-delay-5"><span class="icon">📈</span> Sales Analytics</div>
+    <div class="boost-pill reveal reveal-delay-6"><span class="icon">🔔</span> Smart Alerts</div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-glow"></div>
+  <div class="section-label reveal">Ready?</div>
+  <div class="section-title reveal reveal-delay-1">Stop listing manually.<br><span class="glow-text">Start scaling.</span></div>
+  <div class="section-desc reveal reveal-delay-2" style="margin: 0 auto 48px;">Install DropFlow for Chrome and list your first product in under 60 seconds. Free forever for the core features.</div>
+  <div class="hero-buttons reveal reveal-delay-3">
+    <button class="btn-primary">Add to Chrome — Free</button>
+    <button class="btn-secondary">Join Discord</button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a href="#" class="nav-logo">
+        <div class="logo-icon">⚡</div>
+        DropFlow
+      </a>
+      <p>The Chrome extension that turns AliExpress & Amazon products into optimized eBay listings — automatically.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Product</h4>
+      <a href="#">Features</a>
+      <a href="#">Pricing</a>
+      <a href="#">Changelog</a>
+      <a href="#">Roadmap</a>
+    </div>
+    <div class="footer-col">
+      <h4>Resources</h4>
+      <a href="#">Documentation</a>
+      <a href="#">Tutorials</a>
+      <a href="#">Blog</a>
+      <a href="#">FAQ</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="#">About</a>
+      <a href="#">Contact</a>
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 DropFlow. All rights reserved.</span>
+    <div class="social-links">
+      <a href="#" aria-label="Twitter">𝕏</a>
+      <a href="#" aria-label="Discord">💬</a>
+      <a href="#" aria-label="GitHub">⌨</a>
+      <a href="#" aria-label="YouTube">▶</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Particles
+(function() {
+  const container = document.getElementById('particles');
+  for (let i = 0; i < 30; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.animationDuration = (8 + Math.random() * 12) + 's';
+    p.style.animationDelay = (Math.random() * 10) + 's';
+    p.style.width = p.style.height = (1 + Math.random() * 2) + 'px';
+    container.appendChild(p);
+  }
+})();
+
+// Cursor glow
+(function() {
+  const glow = document.getElementById('cursor-glow');
+  let mx = 0, my = 0, gx = 0, gy = 0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    glow.style.opacity = '1';
+  });
+  document.addEventListener('mouseleave', () => glow.style.opacity = '0');
+  function animate() {
+    gx += (mx - gx) * 0.08;
+    gy += (my - gy) * 0.08;
+    glow.style.left = gx + 'px';
+    glow.style.top = gy + 'px';
+    requestAnimationFrame(animate);
+  }
+  animate();
+})();
+
+// Nav scroll state
+window.addEventListener('scroll', () => {
+  document.querySelector('nav').classList.toggle('scrolled', window.scrollY > 50);
+});
+
+// Reveal on scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Animated counters
+const counterObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const el = entry.target;
+      const target = parseInt(el.dataset.target);
+      const suffix = el.dataset.suffix || '';
+      let current = 0;
+      const step = Math.max(1, Math.floor(target / 40));
+      const interval = setInterval(() => {
+        current += step;
+        if (current >= target) {
+          current = target;
+          clearInterval(interval);
+        }
+        el.textContent = current + suffix;
+      }, 30);
+      counterObserver.unobserve(el);
+    }
+  });
+}, { threshold: 0.5 });
+
+document.querySelectorAll('.stat-number').forEach(el => counterObserver.observe(el));
+</script>
+</body>
+</html>
