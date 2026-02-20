@@ -20,6 +20,9 @@
     </script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <style>
         body { font-family: 'Inter', sans-serif; }
         ::-webkit-scrollbar { width: 6px; }
@@ -28,7 +31,7 @@
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="bg-bg-dark text-slate-200 h-screen flex overflow-hidden">
+<body x-data="dashboardData()" class="bg-bg-dark text-slate-200 h-screen flex overflow-hidden">
 
     <aside class="w-64 bg-bg-dark border-r border-white/5 flex flex-col h-full z-20">
         <div class="h-16 flex items-center px-6 border-b border-white/5">
@@ -78,16 +81,16 @@
         <header class="h-16 flex items-center justify-between px-8 border-b border-white/5 bg-bg-dark/80 backdrop-blur-md sticky top-0 z-10">
             <div class="flex flex-col">
                 <h1 class="text-xl font-bold text-white">Dashboard</h1>
-                <span class="text-xs text-slate-400">Statistics</span>
+                <span class="text-xs text-slate-400" x-text="periodLabel">Statistics</span>
             </div>
             <div class="flex items-center gap-3">
                 <div class="flex bg-bg-card rounded-lg p-1 border border-white/5 text-sm">
-                    <button class="px-3 py-1.5 text-slate-400 hover:text-white rounded-md transition-colors">Today</button>
-                    <button class="px-3 py-1.5 text-slate-400 hover:text-white rounded-md transition-colors">7 Days</button>
-                    <button class="px-3 py-1.5 text-slate-400 hover:text-white rounded-md transition-colors">30 Days</button>
-                    <button class="px-3 py-1.5 bg-white/10 text-white rounded-md shadow-sm border border-white/5 flex items-center gap-2">
+                    <button @click="setPeriod('today')" :class="period === 'today' ? 'bg-white/10 text-white shadow-sm border border-white/5' : 'text-slate-400 hover:text-white border border-transparent'" class="px-3 py-1.5 rounded-md transition-colors">Today</button>
+                    <button @click="setPeriod('7days')" :class="period === '7days' ? 'bg-white/10 text-white shadow-sm border border-white/5' : 'text-slate-400 hover:text-white border border-transparent'" class="px-3 py-1.5 rounded-md transition-colors">7 Days</button>
+                    <button @click="setPeriod('30days')" :class="period === '30days' ? 'bg-white/10 text-white shadow-sm border border-white/5' : 'text-slate-400 hover:text-white border border-transparent'" class="px-3 py-1.5 rounded-md transition-colors">30 Days</button>
+                    <button x-ref="datePickerBtn" :class="period === 'custom' ? 'bg-white/10 text-white shadow-sm border border-white/5' : 'text-slate-400 hover:text-white border border-transparent'" class="px-3 py-1.5 rounded-md transition-colors flex items-center gap-2">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                        Feb 13 - Feb 20
+                        <span x-text="customDateLabel">Custom Date</span>
                     </button>
                 </div>
             </div>
@@ -101,7 +104,7 @@
                         <div class="w-10 h-10 rounded-full bg-blue-500/10 text-blue-400 flex items-center justify-center text-lg">$</div>
                         <span class="text-xs font-medium text-red-400 flex items-center gap-1">↘️ 36%</span>
                     </div>
-                    <h3 class="text-3xl font-bold text-white mb-1">A$5,069</h3>
+                    <h3 class="text-3xl font-bold text-white mb-1" x-text="current.profit">A$5,069</h3>
                     <p class="text-sm text-slate-400">Profit</p>
                 </div>
                 <div class="bg-bg-card border border-white/5 rounded-2xl p-6 shadow-lg">
@@ -111,7 +114,7 @@
                         </div>
                         <span class="text-xs font-medium text-emerald-400 flex items-center gap-1">↗️ 23%</span>
                     </div>
-                    <h3 class="text-3xl font-bold text-white mb-1">577</h3>
+                    <h3 class="text-3xl font-bold text-white mb-1" x-text="current.orders">577</h3>
                     <p class="text-sm text-slate-400">Orders</p>
                 </div>
                 <div class="bg-bg-card border border-white/5 rounded-2xl p-6 shadow-lg">
@@ -119,7 +122,7 @@
                         <div class="w-10 h-10 rounded-full bg-cyan-500/10 text-cyan-400 flex items-center justify-center text-lg">$</div>
                         <span class="text-xs font-medium text-emerald-400 flex items-center gap-1">↗️ 26%</span>
                     </div>
-                    <h3 class="text-3xl font-bold text-white mb-1">A$24,320</h3>
+                    <h3 class="text-3xl font-bold text-white mb-1" x-text="current.revenue">A$24,320</h3>
                     <p class="text-sm text-slate-400">Total Revenue</p>
                 </div>
                 <div class="bg-bg-card border border-white/5 rounded-2xl p-6 shadow-lg">
@@ -129,7 +132,7 @@
                         </div>
                         <span class="text-xs font-medium text-emerald-400 flex items-center gap-1">↗️ 100%</span>
                     </div>
-                    <h3 class="text-3xl font-bold text-white mb-1">0</h3>
+                    <h3 class="text-3xl font-bold text-white mb-1" x-text="current.newProducts">0</h3>
                     <p class="text-sm text-slate-400">New Products</p>
                 </div>
             </div>
@@ -144,7 +147,7 @@
                         <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span> Profit</span>
                     </div>
                 </div>
-                <div id="salesChart" class="w-full h-72"></div>
+                <div id="salesChart" class="w-full h-72" x-init="initDashboard()"></div>
             </div>
 
             <!-- Bottom Row -->
@@ -209,26 +212,132 @@
     </main>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var options = {
-                series: [
-                    { name: 'Revenue', data: [4400, 5000, 5600, 5900, 5700, 6200, 5800] },
-                    { name: 'Product Cost', data: [2800, 3100, 3400, 3600, 3400, 3700, 3300] },
-                    { name: 'Profit', data: [1600, 1900, 2200, 2300, 2300, 2500, 2500] }
-                ],
-                chart: { type: 'area', height: 280, toolbar: { show: false }, background: 'transparent', fontFamily: 'Inter, sans-serif' },
-                colors: ['#3b82f6', '#22d3ee', '#a855f7'],
-                fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.3, opacityTo: 0.05, stops: [0, 90, 100] } },
-                dataLabels: { enabled: false },
-                stroke: { curve: 'smooth', width: 2 },
-                xaxis: { categories: ['Oct 19', 'Oct 20', 'Oct 21', 'Oct 22', 'Oct 23', 'Oct 24', 'Oct 25'], axisBorder: { show: false }, axisTicks: { show: false }, labels: { style: { colors: '#64748b' } } },
-                yaxis: { labels: { style: { colors: '#64748b' } } },
-                grid: { borderColor: 'rgba(255,255,255,0.05)', strokeDashArray: 4 },
-                theme: { mode: 'dark' },
-                legend: { show: false }
-            };
-            var chart = new ApexCharts(document.querySelector("#salesChart"), options);
-            chart.render();
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('dashboardData', () => ({
+                period: '7days',
+                customDateLabel: 'Custom Date',
+                chartInstance: null,
+
+                db: {
+                    today: {
+                        profit: 'A$720',
+                        orders: '82',
+                        revenue: 'A$3,470',
+                        newProducts: '3',
+                        chartCats: ['6AM', '9AM', '12PM', '3PM', '6PM', '9PM'],
+                        chartData: [
+                            [500, 800, 1200, 900, 1100, 700],
+                            [300, 500, 750, 550, 680, 420],
+                            [200, 300, 450, 350, 420, 280]
+                        ]
+                    },
+                    '7days': {
+                        profit: 'A$5,069',
+                        orders: '577',
+                        revenue: 'A$24,320',
+                        newProducts: '0',
+                        chartCats: ['Feb 14', 'Feb 15', 'Feb 16', 'Feb 17', 'Feb 18', 'Feb 19', 'Feb 20'],
+                        chartData: [
+                            [4400, 5000, 5600, 5900, 5700, 6200, 5800],
+                            [2800, 3100, 3400, 3600, 3400, 3700, 3300],
+                            [1600, 1900, 2200, 2300, 2300, 2500, 2500]
+                        ]
+                    },
+                    '30days': {
+                        profit: 'A$18,940',
+                        orders: '2,310',
+                        revenue: 'A$89,500',
+                        newProducts: '14',
+                        chartCats: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                        chartData: [
+                            [18000, 22000, 25000, 24500],
+                            [11000, 13500, 15200, 14800],
+                            [7000, 8500, 9800, 9700]
+                        ]
+                    },
+                    custom: {
+                        profit: 'A$0',
+                        orders: '0',
+                        revenue: 'A$0',
+                        newProducts: '0',
+                        chartCats: [],
+                        chartData: [[], [], []]
+                    }
+                },
+
+                get current() {
+                    return this.db[this.period];
+                },
+
+                get periodLabel() {
+                    if (this.period === 'today') return 'Today';
+                    if (this.period === '7days') return 'Last 7 Days';
+                    if (this.period === '30days') return 'Last 30 Days';
+                    return this.customDateLabel;
+                },
+
+                setPeriod(newPeriod) {
+                    this.period = newPeriod;
+                    if (newPeriod !== 'custom') this.customDateLabel = 'Custom Date';
+                    this.updateChart();
+                },
+
+                initDashboard() {
+                    // 1. Setup Flatpickr on the custom date button
+                    flatpickr(this.$refs.datePickerBtn, {
+                        mode: "range",
+                        dateFormat: "M j",
+                        theme: "dark",
+                        onClose: (selectedDates, dateStr) => {
+                            if (dateStr && dateStr.includes('to')) {
+                                this.period = 'custom';
+                                this.customDateLabel = dateStr.replace(' to ', ' - ');
+                                // Mock some random data for the custom range
+                                this.db.custom.profit = 'A$12,430';
+                                this.db.custom.orders = '1,240';
+                                this.db.custom.revenue = 'A$55,100';
+                                this.db.custom.newProducts = '7';
+                                this.db.custom.chartCats = ['Day 1', 'Day 2', 'Day 3', 'Day 4'];
+                                this.db.custom.chartData = [[12000, 14000, 13500, 15600], [8000, 9500, 9000, 10500], [4000, 4500, 4500, 5100]];
+                                this.updateChart();
+                            }
+                        }
+                    });
+
+                    // 2. Setup initial ApexChart
+                    let options = {
+                        series: [
+                            { name: 'Revenue', data: this.current.chartData[0] },
+                            { name: 'Product Cost', data: this.current.chartData[1] },
+                            { name: 'Profit', data: this.current.chartData[2] }
+                        ],
+                        chart: { type: 'area', height: 280, toolbar: { show: false }, background: 'transparent', fontFamily: 'Inter, sans-serif' },
+                        colors: ['#3b82f6', '#22d3ee', '#a855f7'],
+                        fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.3, opacityTo: 0.05, stops: [0, 90, 100] } },
+                        dataLabels: { enabled: false },
+                        stroke: { curve: 'smooth', width: 2 },
+                        xaxis: { categories: this.current.chartCats, axisBorder: { show: false }, axisTicks: { show: false }, labels: { style: { colors: '#64748b' } } },
+                        yaxis: { labels: { style: { colors: '#64748b' } } },
+                        grid: { borderColor: 'rgba(255,255,255,0.05)', strokeDashArray: 4 },
+                        theme: { mode: 'dark' },
+                        legend: { show: false }
+                    };
+                    this.chartInstance = new ApexCharts(document.querySelector("#salesChart"), options);
+                    this.chartInstance.render();
+                },
+
+                updateChart() {
+                    if (!this.chartInstance) return;
+                    this.chartInstance.updateOptions({
+                        xaxis: { categories: this.current.chartCats }
+                    });
+                    this.chartInstance.updateSeries([
+                        { data: this.current.chartData[0] },
+                        { data: this.current.chartData[1] },
+                        { data: this.current.chartData[2] }
+                    ]);
+                }
+            }));
         });
     </script>
 </body>
