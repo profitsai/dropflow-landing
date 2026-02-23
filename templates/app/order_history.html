@@ -1,0 +1,57 @@
+{% extends "layouts/base_app.html" %}
+
+{% block title %}Order History | DropFlow{% endblock %}
+
+{% block content %}
+<main class="flex-1 flex flex-col h-full relative overflow-y-auto bg-[#0a0f1c]">
+  <header class="pt-8 px-8 pb-6 border-b border-white/5 bg-bg-dark/80 backdrop-blur-md sticky top-0 z-30">
+    <h1 class="text-3xl font-extrabold text-white mb-2">Order History</h1>
+    <p class="text-sm text-slate-400">Track recent orders, profit, and fulfillment status.</p>
+  </header>
+
+  <div class="p-8 pt-6">
+    <div class="bg-[#050810] border border-white/5 rounded-2xl shadow-lg overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full min-w-[900px]">
+          <thead class="bg-white/5 text-left">
+            <tr>
+              <th class="px-5 py-4 text-xs font-bold uppercase tracking-wider text-slate-400">Order ID</th>
+              <th class="px-5 py-4 text-xs font-bold uppercase tracking-wider text-slate-400">Date</th>
+              <th class="px-5 py-4 text-xs font-bold uppercase tracking-wider text-slate-400">Product</th>
+              <th class="px-5 py-4 text-xs font-bold uppercase tracking-wider text-slate-400">Buyer</th>
+              <th class="px-5 py-4 text-xs font-bold uppercase tracking-wider text-slate-400">Profit</th>
+              <th class="px-5 py-4 text-xs font-bold uppercase tracking-wider text-slate-400">Status</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-white/5">
+            <tr class="hover:bg-white/[0.02]">
+              <td class="px-5 py-4 text-sm text-white font-semibold">#EB-10392</td>
+              <td class="px-5 py-4 text-sm text-slate-300">2026-02-22</td>
+              <td class="px-5 py-4 text-sm text-slate-100">Portable Blender Bottle 600ml</td>
+              <td class="px-5 py-4 text-sm text-slate-300">James Carter</td>
+              <td class="px-5 py-4 text-sm font-bold text-emerald-400">$11.22</td>
+              <td class="px-5 py-4"><span class="inline-flex rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-xs font-semibold text-emerald-300">Fulfilled</span></td>
+            </tr>
+            <tr class="hover:bg-white/[0.02]">
+              <td class="px-5 py-4 text-sm text-white font-semibold">#EB-10375</td>
+              <td class="px-5 py-4 text-sm text-slate-300">2026-02-21</td>
+              <td class="px-5 py-4 text-sm text-slate-100">Car Vacuum Wireless Mini Pro</td>
+              <td class="px-5 py-4 text-sm text-slate-300">Sofia Nguyen</td>
+              <td class="px-5 py-4 text-sm font-bold text-emerald-400">$14.85</td>
+              <td class="px-5 py-4"><span class="inline-flex rounded-full border border-blue-500/30 bg-blue-500/10 px-2.5 py-1 text-xs font-semibold text-blue-300">Processing</span></td>
+            </tr>
+            <tr class="hover:bg-white/[0.02]">
+              <td class="px-5 py-4 text-sm text-white font-semibold">#EB-10331</td>
+              <td class="px-5 py-4 text-sm text-slate-300">2026-02-20</td>
+              <td class="px-5 py-4 text-sm text-slate-100">Memory Foam Seat Cushion Office</td>
+              <td class="px-5 py-4 text-sm text-slate-300">Liam Patel</td>
+              <td class="px-5 py-4 text-sm font-bold text-red-300">-$2.10</td>
+              <td class="px-5 py-4"><span class="inline-flex rounded-full border border-yellow-500/30 bg-yellow-500/10 px-2.5 py-1 text-xs font-semibold text-yellow-300">Review</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock %}

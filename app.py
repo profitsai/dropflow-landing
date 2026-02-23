@@ -1,7 +1,7 @@
 import os
 
 from dotenv import load_dotenv
-from flask import Flask, redirect, render_template, request, url_for
+from flask import Flask, flash, redirect, render_template, request, url_for
 from flask_login import (
     LoginManager,
     current_user,
@@ -11,6 +11,7 @@ from flask_login import (
 )
 from flask_mail import Mail, Message
 from flask_migrate import Migrate
+from itsdangerous import BadSignature, BadTimeSignature, URLSafeTimedSerializer
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from models import User, db
@@ -46,6 +47,32 @@ login_manager = LoginManager(app)
 login_manager.login_view = "login"
 migrate = Migrate(app, db)
 mail = Mail(app)
+
+
+RESET_PASSWORD_SALT = "reset-password"
+RESET_PASSWORD_TOKEN_MAX_AGE_SECONDS = 3600
+
+
+def _password_reset_serializer():
+    return URLSafeTimedSerializer(app.config["SECRET_KEY"])
+
+
+def generate_password_reset_token(email):
+    serializer = _password_reset_serializer()
+    return serializer.dumps(email, salt=RESET_PASSWORD_SALT)
+
+
+def verify_password_reset_token(token, max_age=RESET_PASSWORD_TOKEN_MAX_AGE_SECONDS):
+    serializer = _password_reset_serializer()
+    try:
+        email = serializer.loads(token, salt=RESET_PASSWORD_SALT, max_age=max_age)
+    except (BadSignature, BadTimeSignature):
+        return None
+
+    if not email:
+        return None
+
+    return User.query.filter_by(email=email).first()
 
 
 def send_transactional_email(to_email, subject, template_name, **kwargs):
@@ -92,6 +119,11 @@ def privacy():
     return render_template("public/legal.html", page_title="Privacy Policy")
 
 
+@app.route("/refund")
+def refund():
+    return render_template("public/legal.html", page_title="Refund Policy")
+
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
@@ -122,10 +154,11 @@ def logout():
 def forgot_password():
     if request.method == "POST":
         email = (request.form.get("email") or "").strip().lower()
+
         if email:
             user = User.query.filter_by(email=email).first()
             if user:
-                reset_token = "dummy-reset-token"
+                reset_token = generate_password_reset_token(user.email)
                 reset_url = url_for(
                     "reset_password_token", token=reset_token, _external=True
                 )
@@ -136,6 +169,7 @@ def forgot_password():
                     reset_url=reset_url,
                 )
 
+        # Keep response the same whether user exists or not (no account enumeration)
         return render_template("auth/forgot_password.html", submitted=True)
 
     return render_template("auth/forgot_password.html", submitted=False)
@@ -143,13 +177,34 @@ def forgot_password():
 
 @app.route("/reset-password")
 def reset_password():
-    return render_template("auth/reset_password.html")
+    return redirect(url_for("forgot_password"))
 
 
-@app.route("/reset-password/<token>")
+@app.route("/reset-password/<token>", methods=["GET", "POST"])
 def reset_password_token(token):
-    # Token route for future real implementation
-    return render_template("auth/reset_password.html", token=token)
+    user = verify_password_reset_token(token)
+    if not user:
+        return render_template(
+            "auth/reset_password.html", token=token, token_valid=False, error="This password reset link is invalid or has expired."
+        )
+
+    if request.method == "POST":
+        password = request.form.get("password") or ""
+
+        if not password:
+            return render_template(
+                "auth/reset_password.html",
+                token=token,
+                token_valid=True,
+                error="Please enter a new password.",
+            )
+
+        user.password_hash = generate_password_hash(password)
+        db.session.commit()
+        flash("Your password has been reset. Please sign in.", "success")
+        return redirect(url_for("login"))
+
+    return render_template("auth/reset_password.html", token=token, token_valid=True)
 
 
 @app.route("/signup", methods=["GET", "POST"])
@@ -194,13 +249,13 @@ def signup():
 @app.route("/dashboard")
 @login_required
 def dashboard():
-    return render_template("dashboard.html")
+    return render_template("app/dashboard.html")
 
 
 @app.route("/products")
 @login_required
 def products():
-    return render_template("products.html")
+    return render_template("app/inventory.html")
 
 
 @app.route("/products/<product_id>")
@@ -213,7 +268,7 @@ def product_single(product_id):
 @app.route("/orders")
 @login_required
 def orders():
-    return render_template("orders.html")
+    return render_template("app/order_history.html")
 
 
 @app.route("/orders/<order_id>")
@@ -232,7 +287,7 @@ def import_page():
 @app.route("/scraper")
 @login_required
 def scraper():
-    return render_template("scraper.html")
+    return render_template("app/scraper.html")
 
 
 @app.route("/settings")

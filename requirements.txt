@@ -5,3 +5,4 @@ flask-migrate
 Flask-Mail
 python-dotenv
 cryptography
+itsdangerous
