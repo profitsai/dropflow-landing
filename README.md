@@ -24,9 +24,19 @@ SQLALCHEMY_DATABASE_URI=sqlite:///dropflow.db
 # Recommended: dedicated Fernet key for SupplierVault encryption
 # Generate with: python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
 VAULT_ENCRYPTION_KEY=replace-with-generated-fernet-key
+
+# Email (Flask-Mail)
+MAIL_SERVER=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USE_TLS=true
+MAIL_USERNAME=your-smtp-username
+MAIL_PASSWORD=your-smtp-password
+MAIL_DEFAULT_SENDER=no-reply@yourdomain.com
 ```
 
 If `VAULT_ENCRYPTION_KEY` is not set, `SECRET_KEY` is used as fallback key material.
+
+Transactional emails (welcome + password reset) use Flask-Mail. If `MAIL_PASSWORD` is missing, the app falls back to mock mode and prints the full email payload to console instead of sending.
 
 ## Database & Migrations (Flask-Migrate / Alembic)
 

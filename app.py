@@ -9,6 +9,7 @@ from flask_login import (
     login_user,
     logout_user,
 )
+from flask_mail import Mail, Message
 from flask_migrate import Migrate
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -17,18 +18,53 @@ from models import User, db
 
 load_dotenv()
 
+
+def _env_bool(value, default=False):
+    if value is None:
+        return default
+    return str(value).strip().lower() in {"1", "true", "yes", "on"}
+
+
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "dev-secret-change-me")
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv(
     "SQLALCHEMY_DATABASE_URI", "sqlite:///dropflow.db"
 )
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["MAIL_SERVER"] = os.getenv("MAIL_SERVER", "smtp.gmail.com")
+app.config["MAIL_PORT"] = int(os.getenv("MAIL_PORT", "587"))
+app.config["MAIL_USE_TLS"] = _env_bool(os.getenv("MAIL_USE_TLS"), default=True)
+app.config["MAIL_USERNAME"] = os.getenv("MAIL_USERNAME")
+app.config["MAIL_PASSWORD"] = os.getenv("MAIL_PASSWORD")
+app.config["MAIL_DEFAULT_SENDER"] = os.getenv(
+    "MAIL_DEFAULT_SENDER", app.config.get("MAIL_USERNAME") or "no-reply@dropflow.local"
+)
 
 
 db.init_app(app)
 login_manager = LoginManager(app)
 login_manager.login_view = "login"
 migrate = Migrate(app, db)
+mail = Mail(app)
+
+
+def send_transactional_email(to_email, subject, template_name, **kwargs):
+    html_body = render_template(f"emails/{template_name}", **kwargs)
+
+    if not app.config.get("MAIL_PASSWORD"):
+        print("\n" + "=" * 80)
+        print("[MOCK EMAIL] MAIL_PASSWORD not configured — email not sent")
+        print(f"To: {to_email}")
+        print(f"Subject: {subject}")
+        print(f"Template: emails/{template_name}")
+        print("-" * 80)
+        print(html_body)
+        print("=" * 80 + "\n")
+        return False
+
+    msg = Message(subject=subject, recipients=[to_email], html=html_body)
+    mail.send(msg)
+    return True
 
 
 @login_manager.user_loader
@@ -82,9 +118,27 @@ def logout():
     return redirect(url_for("login"))
 
 
-@app.route("/forgot-password")
+@app.route("/forgot-password", methods=["GET", "POST"])
 def forgot_password():
-    return render_template("auth/forgot_password.html")
+    if request.method == "POST":
+        email = (request.form.get("email") or "").strip().lower()
+        if email:
+            user = User.query.filter_by(email=email).first()
+            if user:
+                reset_token = "dummy-reset-token"
+                reset_url = url_for(
+                    "reset_password_token", token=reset_token, _external=True
+                )
+                send_transactional_email(
+                    to_email=user.email,
+                    subject="Reset your DropFlow password",
+                    template_name="reset_password.html",
+                    reset_url=reset_url,
+                )
+
+        return render_template("auth/forgot_password.html", submitted=True)
+
+    return render_template("auth/forgot_password.html", submitted=False)
 
 
 @app.route("/reset-password")
@@ -122,6 +176,14 @@ def signup():
         )
         db.session.add(user)
         db.session.commit()
+
+        login_url = url_for("login", _external=True)
+        send_transactional_email(
+            to_email=user.email,
+            subject="Welcome to DropFlow",
+            template_name="welcome.html",
+            login_url=login_url,
+        )
 
         login_user(user)
         return redirect(url_for("dashboard"))
