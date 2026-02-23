@@ -32,13 +32,14 @@ app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv(
     "SQLALCHEMY_DATABASE_URI", "sqlite:///dropflow.db"
 )
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["MAIL_SERVER"] = os.getenv("MAIL_SERVER", "smtp.gmail.com")
+# Mail Configuration (SendGrid-friendly defaults)
+app.config["MAIL_SERVER"] = os.getenv("MAIL_SERVER", "smtp.sendgrid.net")
 app.config["MAIL_PORT"] = int(os.getenv("MAIL_PORT", "587"))
 app.config["MAIL_USE_TLS"] = _env_bool(os.getenv("MAIL_USE_TLS"), default=True)
-app.config["MAIL_USERNAME"] = os.getenv("MAIL_USERNAME")
-app.config["MAIL_PASSWORD"] = os.getenv("MAIL_PASSWORD")
+app.config["MAIL_USERNAME"] = os.getenv("MAIL_USERNAME", "apikey")
+app.config["MAIL_PASSWORD"] = os.getenv("MAIL_PASSWORD", "")
 app.config["MAIL_DEFAULT_SENDER"] = os.getenv(
-    "MAIL_DEFAULT_SENDER", app.config.get("MAIL_USERNAME") or "no-reply@dropflow.local"
+    "MAIL_DEFAULT_SENDER", "hello@dropflow.com"
 )
 
 
