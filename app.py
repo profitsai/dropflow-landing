@@ -281,7 +281,7 @@ def order_single(order_id):
 @app.route("/import")
 @login_required
 def import_page():
-    return render_template("import.html")
+    return render_template("app/import.html")
 
 
 @app.route("/scraper")

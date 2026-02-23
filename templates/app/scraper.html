@@ -1,0 +1,145 @@
+{% extends "layouts/base_app.html" %}
+
+{% block title %}AI Scraper | DropFlow{% endblock %}
+
+{% block content %}
+<main class="flex-1 flex flex-col h-full relative overflow-y-auto bg-[#0a0f1c]" x-data="{ importType: 'single' }">
+
+  <header class="pt-8 px-8 pb-6 border-b border-white/5 bg-bg-dark/80 backdrop-blur-md sticky top-0 z-30 flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div>
+      <h1 class="text-3xl font-extrabold text-white mb-2">AI Scraper Engine</h1>
+      <p class="text-sm text-slate-400">Import products from Amazon or AliExpress and let AI optimize them for eBay.</p>
+    </div>
+
+    <div class="bg-[#050810] border border-white/10 px-4 py-2.5 rounded-xl shadow-inner flex items-center gap-4">
+      <div>
+        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Monthly Uploads</p>
+        <p class="text-sm font-bold text-white">142 <span class="text-slate-500 font-normal">/ 5,000</span></p>
+      </div>
+      <div class="w-16 h-1.5 bg-[#0a0f1c] rounded-full overflow-hidden border border-white/5">
+        <div class="bg-brand w-[28%] h-full rounded-full"></div>
+      </div>
+    </div>
+  </header>
+
+  <div class="p-8 max-w-5xl mx-auto w-full space-y-8 pb-24">
+
+    <div class="bg-bg-card border border-brand/20 rounded-2xl shadow-[0_0_30px_rgba(139,92,246,0.05)] overflow-hidden">
+      <div class="flex border-b border-white/5 bg-[#050810]">
+        <button @click="importType = 'single'" :class="importType === 'single' ? 'text-brand-light border-b-2 border-brand-light bg-white/5' : 'text-slate-400 hover:text-white hover:bg-white/[0.02]'" class="flex-1 py-4 text-sm font-bold transition-all">Single URL Import</button>
+        <button @click="importType = 'bulk'" :class="importType === 'bulk' ? 'text-brand-light border-b-2 border-brand-light bg-white/5' : 'text-slate-400 hover:text-white hover:bg-white/[0.02]'" class="flex-1 py-4 text-sm font-bold transition-all border-l border-white/5">Bulk CSV / Multi-URL</button>
+      </div>
+
+      <div class="p-8">
+        <div x-show="importType === 'single'" x-transition.opacity>
+          <form action="/api/scrape" method="POST" class="space-y-6">
+            <div>
+              <label class="block text-xs font-bold text-slate-300 mb-2 uppercase tracking-wider">Target URL (Amazon, AliExpress, or eBay Store)</label>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <svg class="w-5 h-5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
+                </div>
+                <input type="url" required placeholder="Paste Amazon product, AliExpress link, or eBay competitor URL..." class="w-full bg-[#050810] border border-white/10 rounded-xl pl-11 pr-4 py-4 text-sm text-white focus:outline-none focus:border-brand transition-all shadow-inner">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <label class="flex items-start gap-3 p-4 rounded-xl border border-white/5 bg-[#050810] cursor-pointer hover:border-brand/30 transition-colors">
+                <input type="checkbox" checked class="mt-1 accent-brand">
+                <div>
+                  <p class="text-sm font-bold text-white mb-0.5">AI Listing Optimization</p>
+                  <p class="text-xs text-slate-500">Auto-rewrite title and HTML description for eBay SEO.</p>
+                </div>
+              </label>
+              <label class="flex items-start gap-3 p-4 rounded-xl border border-white/5 bg-[#050810] cursor-pointer hover:border-brand/30 transition-colors">
+                <input type="checkbox" checked class="mt-1 accent-brand">
+                <div>
+                  <p class="text-sm font-bold text-white mb-0.5">Advanced Product Matching System</p>
+                  <p class="text-xs text-slate-500">Map supplier variations securely for automated fulfillment.</p>
+                </div>
+              </label>
+            </div>
+
+            <button type="submit" class="w-full bg-brand hover:bg-brand-light text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-brand/20 flex items-center justify-center gap-2 text-lg">
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+              Scrape & Optimize
+            </button>
+          </form>
+        </div>
+
+        <div x-show="importType === 'bulk'" x-transition.opacity style="display: none;">
+          <div class="border-2 border-dashed border-white/10 hover:border-brand/50 rounded-2xl p-10 text-center transition-colors bg-[#050810] cursor-pointer group">
+            <div class="w-16 h-16 bg-brand/10 text-brand-light rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+              <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2">Drag & Drop CSV</h3>
+            <p class="text-sm text-slate-400 max-w-md mx-auto mb-6">Upload a CSV containing up to 500 supplier URLs. The AI engine will process them in the background.</p>
+            <button class="bg-white/10 hover:bg-white/20 text-white text-sm font-bold px-6 py-2.5 rounded-xl transition-all border border-white/5">Browse Files</button>
+          </div>
+          <div class="mt-4 text-center">
+            <a href="#" class="text-xs text-brand hover:text-brand-light font-bold">Download CSV Template ↓</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div>
+      <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+        <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
+        Active Processing Queue
+      </h2>
+
+      <div class="bg-[#050810] border border-white/10 rounded-2xl overflow-hidden shadow-lg">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-white/5 border-b border-white/10 text-xs font-bold text-slate-400 uppercase tracking-wider">
+              <th class="p-4">Job ID</th>
+              <th class="p-4">Target Source</th>
+              <th class="p-4">Status</th>
+              <th class="p-4 text-right">Action</th>
+            </tr>
+          </thead>
+          <tbody class="text-sm">
+            <tr class="border-b border-white/5 bg-brand/5">
+              <td class="p-4 font-mono text-slate-300">SCR-8839-A</td>
+              <td class="p-4">
+                <div class="flex items-center gap-2">
+                  <span class="w-5 h-5 rounded bg-yellow-500/20 text-yellow-500 flex items-center justify-center font-bold font-serif text-xs">a</span>
+                  <span class="text-white font-medium truncate max-w-[200px]">amazon.com/dp/B08X...</span>
+                </div>
+              </td>
+              <td class="p-4">
+                <span class="inline-flex items-center gap-1.5 text-brand-light font-bold text-xs bg-brand/10 px-2 py-1 rounded">
+                  <svg class="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                  AI Optimizing...
+                </span>
+              </td>
+              <td class="p-4 text-right"><span class="text-slate-500 text-xs">Processing</span></td>
+            </tr>
+
+            <tr class="border-b border-white/5 hover:bg-white/[0.02] transition-colors">
+              <td class="p-4 font-mono text-slate-500">SCR-8838-B</td>
+              <td class="p-4">
+                <div class="flex items-center gap-2">
+                  <span class="w-5 h-5 rounded bg-blue-600/20 text-blue-400 flex items-center justify-center font-bold font-serif text-xs">e</span>
+                  <span class="text-slate-300 font-medium truncate max-w-[200px]">ebay.com/usr/xxxxxx...</span>
+                </div>
+              </td>
+              <td class="p-4">
+                <span class="inline-flex items-center gap-1.5 text-emerald-400 font-bold text-xs bg-emerald-400/10 px-2 py-1 rounded border border-emerald-400/20">Ready for Review</span>
+              </td>
+              <td class="p-4 text-right">
+                <a href="/products/SKU-TEMP" class="text-xs font-bold text-brand hover:text-brand-light bg-brand/10 px-3 py-1.5 rounded transition-colors">Review Draft →</a>
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+</main>
+{% endblock %}

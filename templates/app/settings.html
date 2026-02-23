@@ -1,0 +1,220 @@
+{% extends "layouts/base_app.html" %}
+
+{% block title %}Settings & Billing | DropFlow{% endblock %}
+
+{% block content %}
+<main class="flex-1 flex flex-col h-full relative overflow-y-auto bg-[#0a0f1c]" x-data="{ activeTab: 'billing' }">
+
+  <header class="pt-8 px-8 pb-6 border-b border-white/5 bg-bg-dark/80 backdrop-blur-md sticky top-0 z-30">
+    <h1 class="text-3xl font-extrabold text-white mb-2">Workspace Settings</h1>
+    <p class="text-sm text-slate-400">Manage your subscription, encrypted connections, and global automation rules.</p>
+  </header>
+
+  <div class="p-8 max-w-7xl mx-auto w-full flex flex-col md:flex-row gap-8 pb-24">
+
+    <aside class="w-full md:w-64 shrink-0">
+      <nav class="flex flex-col gap-2 sticky top-32">
+
+        <button @click="activeTab = 'billing'"
+          :class="activeTab === 'billing' ? 'bg-brand/10 text-brand-light border-brand/30' : 'text-slate-400 hover:text-white hover:bg-white/5 border-transparent'"
+          class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold border transition-all text-left">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
+          Billing & Usage
+        </button>
+
+        <button @click="activeTab = 'integrations'"
+          :class="activeTab === 'integrations' ? 'bg-blue-500/10 text-blue-400 border-blue-500/30' : 'text-slate-400 hover:text-white hover:bg-white/5 border-transparent'"
+          class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold border transition-all text-left">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
+          Integrations & Vault
+        </button>
+
+        <button @click="activeTab = 'automation'"
+          :class="activeTab === 'automation' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' : 'text-slate-400 hover:text-white hover:bg-white/5 border-transparent'"
+          class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold border transition-all text-left">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+          Automation Rules
+        </button>
+
+      </nav>
+    </aside>
+
+    <div class="flex-1 min-w-0">
+
+      <div x-show="activeTab === 'billing'" x-transition.opacity.duration.300ms class="space-y-6">
+
+        <div class="bg-bg-card border border-brand/30 rounded-2xl p-8 shadow-[0_0_30px_rgba(139,92,246,0.1)] relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-48 h-48 bg-brand/10 blur-[50px] rounded-full pointer-events-none"></div>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6 relative z-10">
+            <div>
+              <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Current Plan</h2>
+              <h3 class="text-2xl font-extrabold text-white mb-2">Growth API <span class="text-brand-light text-lg font-medium">(5,000 SKUs)</span></h3>
+              <p class="text-sm text-slate-400">Renews on Mar 23, 2026 for $129.00</p>
+            </div>
+            <div class="flex flex-col gap-2">
+              <button class="bg-brand hover:bg-brand-light text-white px-6 py-2.5 rounded-xl text-sm font-bold transition-all shadow-lg text-center">Upgrade Capacity</button>
+              <button class="text-xs font-bold text-slate-500 hover:text-white transition-colors text-center">Manage via Stripe</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-[#050810] border border-white/5 rounded-2xl p-8 shadow-lg">
+          <h2 class="text-lg font-bold text-white mb-6">Monthly Cloud Usage</h2>
+          <div class="space-y-6">
+
+            <div>
+              <div class="flex justify-between items-end mb-2">
+                <div>
+                  <p class="text-sm font-bold text-white">Monitored API SKUs</p>
+                  <p class="text-[10px] text-slate-500">Total variants synced hourly</p>
+                </div>
+                <div class="text-right">
+                  <p class="text-sm font-bold text-white">4,102 <span class="text-slate-500">/ 5,000</span></p>
+                </div>
+              </div>
+              <div class="w-full bg-[#0a0f1c] rounded-full h-2.5 border border-white/5 overflow-hidden">
+                <div class="bg-emerald-400 h-2.5 rounded-full" style="width: 82%"></div>
+              </div>
+              <p class="text-[10px] text-yellow-500 font-bold mt-2 text-right">Approaching Limit</p>
+            </div>
+
+            <div>
+              <div class="flex justify-between items-end mb-2">
+                <div>
+                  <p class="text-sm font-bold text-white">Automated Fulfillments</p>
+                  <p class="text-[10px] text-slate-500">Zero per-order credits</p>
+                </div>
+                <div class="text-right">
+                  <p class="text-sm font-bold text-white">342 <span class="text-emerald-400 text-[10px] uppercase tracking-wider ml-1">Unlimited</span></p>
+                </div>
+              </div>
+              <div class="w-full bg-[#0a0f1c] rounded-full h-2.5 border border-white/5 overflow-hidden">
+                <div class="bg-brand-light h-2.5 rounded-full w-full"></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <div x-show="activeTab === 'integrations'" x-transition.opacity.duration.300ms style="display: none;" class="space-y-6">
+
+        <div class="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4 flex items-start gap-3">
+          <svg class="w-5 h-5 text-blue-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8V7a4 4 0 00-8 0v4h8z" /></svg>
+          <div>
+            <p class="text-sm font-bold text-blue-300">AES-256 Encrypted Vault</p>
+            <p class="text-xs text-blue-200/70 mt-1 leading-relaxed">Your supplier credentials and API tokens are encrypted at rest. DropFlow servers only decrypt them momentarily during background checkout processes.</p>
+          </div>
+        </div>
+
+        <div class="bg-[#050810] border border-white/5 rounded-2xl p-6 shadow-lg">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-bold text-white">Seller Accounts</h2>
+            <span class="text-[10px] text-slate-500">1 of 3 Stores Connected</span>
+          </div>
+
+          <div class="flex items-center justify-between bg-[#0a0f1c] border border-white/10 p-4 rounded-xl">
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 rounded-lg bg-blue-600/20 text-blue-400 flex items-center justify-center font-bold font-serif text-lg">e</div>
+              <div>
+                <p class="text-sm font-bold text-white">Store_XXXXXX</p>
+                <p class="text-[10px] text-slate-400 font-mono">Token expires in 14 months</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="flex items-center gap-1.5 text-xs font-bold text-emerald-400">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]"></span>
+                Connected
+              </span>
+              <button class="text-xs font-bold text-slate-500 hover:text-red-400 transition-colors px-2">Revoke</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-[#050810] border border-white/5 rounded-2xl p-6 shadow-lg">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-bold text-white">Supplier Vault</h2>
+            <button class="text-xs font-bold text-blue-400 hover:text-blue-300 bg-blue-500/10 px-3 py-1.5 rounded-lg transition-colors">+ Add Account</button>
+          </div>
+
+          <div class="space-y-3">
+            <div class="flex items-center justify-between bg-[#0a0f1c] border border-white/10 p-4 rounded-xl">
+              <div class="flex items-center gap-4">
+                <div class="w-10 h-10 rounded-lg bg-yellow-500/20 text-yellow-500 flex items-center justify-center font-bold font-serif text-lg">a</div>
+                <div>
+                  <p class="text-sm font-bold text-white">dropflow_buyer_01@gmail.com</p>
+                  <p class="text-[10px] text-slate-400 font-mono">Amazon US (Prime Active)</p>
+                </div>
+              </div>
+              <span class="text-xs font-bold text-slate-500 uppercase tracking-widest">Vaulted</span>
+            </div>
+
+            <div class="flex items-center justify-between bg-[#0a0f1c] border border-white/10 p-4 rounded-xl opacity-50">
+              <div class="flex items-center gap-4">
+                <div class="w-10 h-10 rounded-lg bg-orange-500/20 text-orange-500 flex items-center justify-center font-bold font-serif text-lg">a</div>
+                <div>
+                  <p class="text-sm font-bold text-white">No AliExpress Account</p>
+                  <p class="text-[10px] text-slate-400 font-mono">Required for Ali automated fulfillment</p>
+                </div>
+              </div>
+              <button class="text-xs font-bold text-slate-400 hover:text-white transition-colors">Connect</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div x-show="activeTab === 'automation'" x-transition.opacity.duration.300ms style="display: none;" class="space-y-6">
+
+        <div class="bg-[#050810] border border-white/5 rounded-2xl p-6 shadow-lg">
+          <h2 class="text-lg font-bold text-white mb-2">Global Cloud Rules</h2>
+          <p class="text-xs text-slate-400 mb-6">These rules govern your entire API catalog unless overridden on a specific product page.</p>
+
+          <div class="space-y-8">
+            <div>
+              <label class="block text-sm font-bold text-slate-300 mb-2">Out-Of-Stock Action</label>
+              <p class="text-xs text-slate-500 mb-3">What happens on eBay when the Amazon/AliExpress supplier runs out of stock?</p>
+              <select class="w-full max-w-md bg-[#0a0f1c] border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-emerald-500 appearance-none cursor-pointer">
+                <option>Hide Listing (Retain eBay search history)</option>
+                <option>Set Quantity to 0</option>
+                <option>End Listing Completely</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-bold text-slate-300 mb-2">Max Auto-Order Cap</label>
+              <p class="text-xs text-slate-500 mb-3">For fully automated end-to-end fulfillment, the system will halt checkout if the supplier price exceeds this amount.</p>
+              <div class="relative w-full max-w-md">
+                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-bold">$</span>
+                <input type="number" value="150.00" class="w-full bg-[#0a0f1c] border border-white/10 rounded-xl pl-8 pr-4 py-3 text-sm text-white font-mono focus:outline-none focus:border-emerald-500 transition-all">
+              </div>
+            </div>
+
+            <div class="flex items-start gap-4 p-4 rounded-xl border border-white/5 bg-[#0a0f1c]">
+              <div class="mt-1">
+                <div class="w-10 h-5 bg-brand rounded-full relative cursor-pointer shadow-inner">
+                  <div class="w-4 h-4 bg-white rounded-full absolute right-0.5 top-0.5 shadow-md"></div>
+                </div>
+              </div>
+              <div>
+                <p class="text-sm font-bold text-white mb-1">Advanced Product Matching System</p>
+                <p class="text-xs text-slate-400 leading-relaxed">Automatically map complex variations (sizes, colors) between supplier and eBay during checkout to guarantee 100% accurate fulfillment.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-8 pt-6 border-t border-white/5">
+            <button class="bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold px-6 py-2.5 rounded-xl transition-all text-sm shadow-sm">Save Global Rules</button>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</main>
+{% endblock %}

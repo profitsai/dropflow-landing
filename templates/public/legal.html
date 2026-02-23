@@ -1,0 +1,30 @@
+{% extends "layouts/base_marketing.html" %}
+
+{% block title %}{{ page_title }} | DropFlow{% endblock %}
+
+{% block content %}
+<main class="flex-grow pt-32 pb-24 relative overflow-hidden">
+  <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-2xl h-[300px] bg-brand/10 blur-[120px] rounded-full pointer-events-none"></div>
+
+  <div class="max-w-3xl mx-auto px-6 relative z-10">
+    <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-8 tracking-tight">{{ page_title }}</h1>
+
+    <div class="text-slate-400 leading-relaxed space-y-6">
+      <p class="text-sm text-slate-500 mb-8 border-b border-white/10 pb-4">Last Updated: February 2026</p>
+
+      {% if content %}
+        {{ content | safe }}
+      {% else %}
+        <h2 class="text-xl font-bold text-white mt-8 mb-3">1. Introduction</h2>
+        <p>Welcome to DropFlow. By accessing our website and using our Chrome Extension or API Cloud services, you agree to be bound by these terms.</p>
+
+        <h2 class="text-xl font-bold text-white mt-8 mb-3">2. Subscription and Billing</h2>
+        <p>DropFlow operates on a subscription basis. You will be billed in advance on a recurring and periodic basis. You may cancel your subscription at any time through your dashboard billing portal.</p>
+
+        <h2 class="text-xl font-bold text-white mt-8 mb-3">3. Platform Compliance</h2>
+        <p>While DropFlow provides tools to automate your dropshipping workflow, you are solely responsible for maintaining your marketplace seller metrics and complying with all third-party terms of service.</p>
+      {% endif %}
+    </div>
+  </div>
+</main>
+{% endblock %}

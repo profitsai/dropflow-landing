@@ -1,0 +1,244 @@
+{% extends 'layouts/base_app.html' %}
+
+{% block title %}Edit Product | DropFlow{% endblock %}
+
+{% block content %}
+<div class="flex-1 flex flex-col h-full relative overflow-y-auto bg-[#0a0f1c]"
+     x-data="{ sourcePrice: 24.99, shipping: 0.00, ebayFeePct: 13.5, targetPrice: 49.99,
+              get totalCost() { return this.sourcePrice + this.shipping; },
+              get ebayFee() { return (this.targetPrice * (this.ebayFeePct / 100)); },
+              get profit() { return this.targetPrice - this.totalCost - this.ebayFee; },
+              get margin() { return ((this.profit / this.targetPrice) * 100).toFixed(1); } }">
+
+  <header class="pt-8 px-8 pb-6 border-b border-white/5 bg-bg-dark/80 backdrop-blur-md sticky top-0 z-30 flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div>
+      <nav class="flex items-center gap-2 text-xs font-medium text-slate-500 mb-2">
+        <a href="/products" class="hover:text-white transition-colors">Products</a>
+        <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+        <span class="text-brand-light">{{ product_id }}</span>
+      </nav>
+      <div class="flex items-center gap-3">
+        <h1 class="text-2xl font-extrabold text-white truncate max-w-xl">Industrial LED Warning Light Beacon</h1>
+        <span class="px-2.5 py-1 rounded-md bg-yellow-500/10 border border-yellow-500/20 text-yellow-500 text-[10px] font-bold uppercase tracking-wider">Draft - Ready to Push</span>
+      </div>
+    </div>
+    <div class="flex items-center gap-3">
+      <button class="px-4 py-2 rounded-xl text-sm font-bold text-slate-300 hover:text-white hover:bg-white/5 transition-all">Save Draft</button>
+      <button class="bg-brand hover:bg-brand-light text-white px-6 py-2 rounded-xl text-sm font-bold transition-all shadow-[0_0_15px_rgba(139,92,246,0.3)] flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+        Push to eBay
+      </button>
+    </div>
+  </header>
+
+  <div class="p-8 max-w-7xl mx-auto w-full grid grid-cols-1 xl:grid-cols-3 gap-8 pb-24">
+
+    <!-- Left column -->
+    <div class="xl:col-span-2 space-y-6">
+
+      <!-- Listing Details -->
+      <div class="bg-[#050810] border border-white/5 rounded-2xl p-6 shadow-lg">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-lg font-bold text-white">Listing Details</h2>
+          <button class="text-xs font-bold text-brand hover:text-brand-light flex items-center gap-1 bg-brand/10 px-3 py-1.5 rounded-lg transition-colors">
+            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
+            Run SEO Title Builder
+          </button>
+        </div>
+
+        <div class="space-y-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">eBay Title (Max 80 chars)</label>
+            <input type="text" value="Industrial LED Warning Light Beacon Strobe Flashing Emergency Truck Rotating" class="w-full bg-[#0a0f1c] border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand transition-all">
+            <div class="flex justify-end mt-1 text-[10px] text-emerald-400 font-medium">74 / 80 characters used</div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">eBay Category</label>
+              <select class="w-full bg-[#0a0f1c] border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand appearance-none">
+                <option>Business & Industrial > Warning Lights</option>
+                <option>Auto Parts > Lighting</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Condition</label>
+              <select class="w-full bg-[#0a0f1c] border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand appearance-none">
+                <option>New</option>
+                <option>Used - Like New</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI HTML Description -->
+      <div class="bg-[#050810] border border-white/5 rounded-2xl p-6 shadow-lg">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-lg font-bold text-white">AI HTML Description</h2>
+          <span class="text-[10px] font-bold text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded uppercase tracking-wider border border-emerald-400/20">VERO Compliant</span>
+        </div>
+
+        <div class="bg-[#0a0f1c] border border-white/10 rounded-t-xl p-2 flex items-center gap-2 border-b-0">
+          <button class="p-1.5 hover:bg-white/5 rounded text-slate-400 hover:text-white transition-colors"><strong class="font-serif">B</strong></button>
+          <button class="p-1.5 hover:bg-white/5 rounded text-slate-400 hover:text-white transition-colors"><em class="font-serif">I</em></button>
+          <div class="w-px h-4 bg-white/10 mx-1"></div>
+          <button class="p-1.5 hover:bg-white/5 rounded text-slate-400 hover:text-white transition-colors"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" /></svg></button>
+          <button class="p-1.5 hover:bg-white/5 rounded text-slate-400 hover:text-white transition-colors"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg></button>
+          <div class="flex-grow"></div>
+          <button class="text-xs font-bold text-brand hover:text-brand-light">Regenerate with AI</button>
+        </div>
+
+        <div class="bg-[#0a0f1c] border border-white/10 rounded-b-xl p-4 min-h-[250px] text-sm text-slate-300 font-sans leading-relaxed">
+          <h3 class="text-white font-bold text-lg mb-2">Premium Industrial Warning Beacon</h3>
+          <p class="mb-4">Ensure maximum safety and visibility with this high-intensity LED rotating strobe light. Perfect for emergency vehicles, construction trucks, and warehouse forklifts.</p>
+          <ul class="list-disc pl-5 space-y-1 mb-4">
+            <li><strong>360° Coverage:</strong> Ultra-bright LEDs visible from miles away.</li>
+            <li><strong>Weatherproof:</strong> IP65 rated for extreme rain and snow conditions.</li>
+            <li><strong>Magnetic Base:</strong> Installs securely in seconds without drilling.</li>
+          </ul>
+          <p class="text-xs text-slate-500 italic mt-8">100% Satisfaction Guarantee. Fast Shipping. 30-Day Returns.</p>
+        </div>
+      </div>
+
+      <!-- Variation Mapper -->
+      <div class="bg-[#050810] border border-white/5 rounded-2xl p-6 shadow-lg">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h2 class="text-lg font-bold text-white mb-1">Variation Mapper</h2>
+            <p class="text-xs text-slate-500">Auto-mapped from Amazon source.</p>
+          </div>
+          <span class="text-[10px] font-bold text-blue-400 bg-blue-400/10 px-2 py-1 rounded uppercase tracking-wider border border-blue-400/20">3 Active SKUs</span>
+        </div>
+
+        <div class="space-y-3">
+          <div class="flex items-center gap-4 bg-[#0a0f1c] p-3 rounded-xl border border-white/10">
+            <div class="w-12 h-12 bg-slate-800 rounded-lg shrink-0 border border-white/5 overflow-hidden">
+              <img src="https://placehold.co/100x100/1e293b/ffffff?text=Amber" class="w-full h-full object-cover">
+            </div>
+            <div class="flex-1">
+              <p class="text-sm font-bold text-white mb-0.5">Color: Amber (12V)</p>
+              <p class="text-[10px] font-mono text-slate-500">Source ASIN: B08X4J9K2</p>
+            </div>
+            <div class="text-right mr-4">
+              <p class="text-sm font-bold text-emerald-400">$24.99</p>
+              <p class="text-[10px] text-slate-500">Cost: $12.50</p>
+            </div>
+            <div class="w-10 h-5 bg-brand rounded-full relative cursor-pointer shadow-inner">
+              <div class="w-4 h-4 bg-white rounded-full absolute right-0.5 top-0.5 shadow-md"></div>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-4 bg-[#0a0f1c] p-3 rounded-xl border border-white/10 opacity-60">
+            <div class="w-12 h-12 bg-slate-800 rounded-lg shrink-0 border border-white/5 overflow-hidden">
+              <img src="https://placehold.co/100x100/1e293b/ffffff?text=Red" class="w-full h-full object-cover">
+            </div>
+            <div class="flex-1">
+              <p class="text-sm font-bold text-white mb-0.5">Color: Red (12V)</p>
+              <p class="text-[10px] font-mono text-slate-500 text-red-400">Out of Stock at Source</p>
+            </div>
+            <div class="text-right mr-4">
+              <p class="text-sm font-bold text-slate-400">$24.99</p>
+              <p class="text-[10px] text-slate-500">Cost: $12.50</p>
+            </div>
+            <div class="w-10 h-5 bg-slate-700 rounded-full relative cursor-pointer shadow-inner">
+              <div class="w-4 h-4 bg-slate-400 rounded-full absolute left-0.5 top-0.5 shadow-md"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right sidebar -->
+    <div class="space-y-6">
+
+      <div class="bg-bg-card border border-white/10 rounded-2xl p-6 shadow-xl relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-24 h-24 bg-yellow-500/10 blur-[30px] rounded-full pointer-events-none"></div>
+        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Source Supplier</h3>
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center border border-white/10"><span class="text-white font-bold font-serif">a</span></div>
+          <div>
+            <p class="text-sm font-bold text-white">Amazon US</p>
+            <p class="text-[10px] text-emerald-400 font-mono">● In Stock (Prime)</p>
+          </div>
+        </div>
+        <a href="#" class="block w-full text-center bg-[#050810] hover:bg-white/5 border border-white/10 text-xs font-bold text-slate-300 py-2.5 rounded-lg transition-colors">View Original Product ↗️</a>
+      </div>
+
+      <div class="bg-bg-card border border-brand/30 rounded-2xl p-6 shadow-[0_0_30px_rgba(139,92,246,0.1)]">
+        <div class="flex items-center gap-2 mb-6">
+          <svg class="w-5 h-5 text-brand-light" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
+          <h3 class="text-lg font-bold text-white">Margin Calculator</h3>
+        </div>
+
+        <div class="space-y-4 mb-6">
+          <div class="flex justify-between items-center">
+            <label class="text-xs font-bold text-slate-400">Supplier Cost</label>
+            <div class="relative w-24">
+              <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500 text-sm">$</span>
+              <input type="number" x-model.number="sourcePrice" class="w-full bg-[#050810] border border-white/10 rounded-lg pl-6 pr-2 py-1.5 text-sm text-white font-mono text-right focus:outline-none focus:border-brand">
+            </div>
+          </div>
+
+          <div class="flex justify-between items-center">
+            <label class="text-xs font-bold text-slate-400">Est. Shipping</label>
+            <div class="relative w-24">
+              <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500 text-sm">$</span>
+              <input type="number" x-model.number="shipping" class="w-full bg-[#050810] border border-white/10 rounded-lg pl-6 pr-2 py-1.5 text-sm text-white font-mono text-right focus:outline-none focus:border-brand">
+            </div>
+          </div>
+
+          <div class="flex justify-between items-center pt-4 border-t border-white/5">
+            <label class="text-xs font-bold text-brand-light">eBay Sell Price</label>
+            <div class="relative w-28">
+              <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-brand-light text-sm font-bold">$</span>
+              <input type="number" x-model.number="targetPrice" class="w-full bg-brand/10 border border-brand/30 rounded-lg pl-6 pr-2 py-1.5 text-sm text-white font-bold font-mono text-right focus:outline-none focus:border-brand shadow-inner">
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-[#050810] rounded-xl p-4 border border-white/5">
+          <div class="flex justify-between text-xs text-slate-400 mb-2">
+            <span>eBay Fees (13.5%)</span>
+            <span class="font-mono text-red-400" x-text="'-$' + ebayFee.toFixed(2)"></span>
+          </div>
+          <div class="h-px w-full bg-white/5 my-3"></div>
+          <div class="flex justify-between items-center">
+            <span class="text-sm font-bold text-white">Net Profit</span>
+            <div class="text-right">
+              <p class="text-xl font-extrabold text-emerald-400 font-mono" x-text="'$' + profit.toFixed(2)"></p>
+              <p class="text-[10px] text-emerald-500/70 font-bold" x-text="margin + '% Margin'"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-bg-card border border-white/10 rounded-2xl p-6 shadow-xl">
+        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Repricing Rules</h3>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-300 mb-1.5">Pricing Strategy</label>
+            <select class="w-full bg-[#050810] border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-brand appearance-none">
+              <option>Fixed % Markup (150%)</option>
+              <option>Fixed $ Markup (+$15.00)</option>
+              <option>Dynamic Tier Rules</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-300 mb-1.5">Min. Profit Floor (Override)</label>
+            <div class="relative">
+              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 font-bold">$</span>
+              <input type="number" value="5.00" class="w-full bg-[#050810] border border-white/10 rounded-lg pl-7 pr-3 py-2 text-sm text-white font-mono focus:outline-none focus:border-brand">
+            </div>
+            <p class="text-[10px] text-slate-500 mt-1.5 leading-tight">If source price spikes, eBay listing will end before dipping below this profit.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,164 @@
+{% extends "layouts/base_app.html" %}
+
+{% block title %}Dashboard | DropFlow{% endblock %}
+
+{% block content %}
+<main class="flex-1 flex flex-col h-full relative overflow-y-auto bg-[#0a0f1c]">
+
+  <header class="pt-8 px-8 pb-6 border-b border-white/5 bg-bg-dark/80 backdrop-blur-md sticky top-0 z-30 flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div>
+      <h1 class="text-3xl font-extrabold text-white mb-2">Welcome back{% if current_user.is_authenticated %}, {{ current_user.email.split('@')[0] }}{% endif %}</h1>
+      <p class="text-sm text-slate-400">Here is what the Cloud Engine has done for you today.</p>
+    </div>
+    <div class="flex items-center gap-3">
+      <a href="/scraper" class="bg-brand hover:bg-brand-light text-white px-6 py-2.5 rounded-xl text-sm font-bold transition-all shadow-[0_0_15px_rgba(139,92,246,0.3)] flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+        Import New Product
+      </a>
+    </div>
+  </header>
+
+  <div class="p-8 max-w-7xl mx-auto w-full space-y-8 pb-24">
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+      <div class="bg-bg-card border border-white/5 rounded-2xl p-6 shadow-lg relative overflow-hidden group hover:border-emerald-500/30 transition-colors">
+        <div class="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 blur-[30px] rounded-full pointer-events-none group-hover:bg-emerald-500/10 transition-colors"></div>
+        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">30-Day Est. Profit</p>
+        <h2 class="text-3xl font-extrabold text-white mb-1">$4,289<span class="text-sm text-slate-500 font-medium">.50</span></h2>
+        <p class="text-xs text-emerald-400 font-bold flex items-center gap-1">
+          <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>
+          12.4% vs last month
+        </p>
+      </div>
+
+      <div class="bg-bg-card border border-white/5 rounded-2xl p-6 shadow-lg relative overflow-hidden group hover:border-brand/30 transition-colors">
+        <div class="absolute top-0 right-0 w-24 h-24 bg-brand/5 blur-[30px] rounded-full pointer-events-none group-hover:bg-brand/10 transition-colors"></div>
+        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Active Cloud SKUs</p>
+        <h2 class="text-3xl font-extrabold text-white mb-1">4,102</h2>
+        <p class="text-xs text-slate-400 font-bold">Synced hourly</p>
+      </div>
+
+      <div class="bg-bg-card border border-white/5 rounded-2xl p-6 shadow-lg relative overflow-hidden group hover:border-blue-500/30 transition-colors">
+        <div class="absolute top-0 right-0 w-24 h-24 bg-blue-500/5 blur-[30px] rounded-full pointer-events-none group-hover:bg-blue-500/10 transition-colors"></div>
+        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">24h Auto-Orders</p>
+        <h2 class="text-3xl font-extrabold text-white mb-1">38</h2>
+        <p class="text-xs text-blue-400 font-bold flex items-center gap-1">Hands-free fulfillment</p>
+      </div>
+
+      <div class="bg-bg-card border border-white/5 rounded-2xl p-6 shadow-lg relative overflow-hidden group hover:border-red-500/30 transition-colors">
+        <div class="absolute top-0 right-0 w-24 h-24 bg-red-500/5 blur-[30px] rounded-full pointer-events-none group-hover:bg-red-500/10 transition-colors"></div>
+        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Action Required</p>
+        <h2 class="text-3xl font-extrabold text-white mb-1">2</h2>
+        <a href="/orders" class="text-xs text-red-400 font-bold hover:text-red-300 transition-colors flex items-center gap-1">Review Failed Orders →</a>
+      </div>
+
+    </div>
+
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+
+      <div class="xl:col-span-2 bg-[#050810] border border-white/5 rounded-2xl shadow-lg flex flex-col">
+        <div class="p-6 border-b border-white/5 flex items-center justify-between">
+          <h2 class="text-lg font-bold text-white flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
+            Live Automation Feed
+          </h2>
+          <a href="/orders" class="text-xs font-bold text-brand hover:text-brand-light transition-colors">View All</a>
+        </div>
+
+        <div class="p-6 flex-1 overflow-y-auto">
+          <div class="space-y-6">
+
+            <div class="flex items-start gap-4">
+              <div class="w-8 h-8 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 mt-1">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+              </div>
+              <div>
+                <p class="text-sm font-bold text-white">Auto-Order Fulfilled: eBay #09-11394</p>
+                <p class="text-xs text-slate-400 mt-0.5">Advanced product matching system mapped SKU-88392-BLK to Amazon source and placed order automatically.</p>
+                <p class="text-[10px] font-mono text-slate-500 mt-2">Just now</p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-4">
+              <div class="w-8 h-8 rounded-full bg-yellow-500/10 border border-yellow-500/20 text-yellow-500 flex items-center justify-center shrink-0 mt-1">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+              </div>
+              <div>
+                <p class="text-sm font-bold text-white">Listing Hidden: Out of Stock</p>
+                <p class="text-xs text-slate-400 mt-0.5">AliExpress source for <a href="#" class="text-brand hover:underline">SKU-ALI-992</a> ran out of stock. Listing safely hidden to preserve metrics.</p>
+                <p class="text-[10px] font-mono text-slate-500 mt-2">12 mins ago</p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-4">
+              <div class="w-8 h-8 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 flex items-center justify-center shrink-0 mt-1">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+              </div>
+              <div>
+                <p class="text-sm font-bold text-white">Checkout Halted: Safety Cap Triggered</p>
+                <p class="text-xs text-slate-400 mt-0.5">Amazon source price spiked. Order <a href="/orders/EB-99382-XYZ" class="text-brand hover:underline">#EB-99382-XYZ</a> requires manual review.</p>
+                <p class="text-[10px] font-mono text-slate-500 mt-2">45 mins ago</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="space-y-8">
+
+        <div class="bg-bg-card border border-white/5 rounded-2xl p-6 shadow-lg">
+          <h2 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Quick Actions</h2>
+          <div class="space-y-3">
+            <a href="/products" class="flex items-center justify-between p-3 rounded-xl bg-[#050810] border border-white/5 hover:border-brand/30 transition-colors group">
+              <span class="text-sm font-bold text-slate-300 group-hover:text-white transition-colors">Manage Inventory</span>
+              <svg class="w-4 h-4 text-slate-500 group-hover:text-brand transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+            </a>
+            <a href="/orders" class="flex items-center justify-between p-3 rounded-xl bg-[#050810] border border-white/5 hover:border-brand/30 transition-colors group">
+              <span class="text-sm font-bold text-slate-300 group-hover:text-white transition-colors">View All Orders</span>
+              <svg class="w-4 h-4 text-slate-500 group-hover:text-brand transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+            </a>
+            <a href="/settings" class="flex items-center justify-between p-3 rounded-xl bg-[#050810] border border-white/5 hover:border-brand/30 transition-colors group">
+              <span class="text-sm font-bold text-slate-300 group-hover:text-white transition-colors">Global Rules & Settings</span>
+              <svg class="w-4 h-4 text-slate-500 group-hover:text-brand transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="bg-bg-card border border-white/5 rounded-2xl p-6 shadow-lg">
+          <h2 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">API Connections</h2>
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-blue-600/20 text-blue-400 flex items-center justify-center font-bold font-serif">e</div>
+                <div>
+                  <p class="text-sm font-bold text-white">Store_XXXXXX</p>
+                  <p class="text-[10px] text-slate-500">eBay Seller Account</p>
+                </div>
+              </div>
+              <span class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981]"></span>
+            </div>
+
+            <div class="flex items-center justify-between opacity-50">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-orange-500/20 text-orange-500 flex items-center justify-center font-bold font-serif">a</div>
+                <div>
+                  <p class="text-sm font-bold text-white">No Ali Account</p>
+                  <p class="text-[10px] text-slate-500">Supplier Vault</p>
+                </div>
+              </div>
+              <span class="w-2 h-2 rounded-full bg-slate-600"></span>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</main>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "layouts/base_app.html" %}
+
+{% block title %}Upgrade Successful | DropFlow{% endblock %}
+
+{% block content %}
+<main class="flex-1 flex flex-col items-center justify-center min-h-screen relative overflow-y-auto bg-[#0a0f1c] p-6">
+  <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-brand/20 blur-[150px] rounded-full pointer-events-none"></div>
+
+  <div class="max-w-md w-full relative z-10 text-center">
+    <div class="w-24 h-24 bg-brand/10 border border-brand/30 rounded-full flex items-center justify-center mx-auto mb-8 shadow-[0_0_40px_rgba(139,92,246,0.3)]">
+      <div class="w-16 h-16 bg-brand rounded-full flex items-center justify-center shadow-inner">
+        <svg class="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" /></svg>
+      </div>
+    </div>
+
+    <h1 class="text-3xl font-extrabold text-white mb-4">Welcome to the Cloud.</h1>
+    <p class="text-slate-400 mb-8 leading-relaxed">
+      Your payment was successful and your account has been instantly upgraded.
+      You now have full access to DropFlow's hands-free API automation.
+    </p>
+
+    <div class="bg-[#050810] border border-white/10 rounded-2xl p-6 mb-8 text-left shadow-lg">
+      <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">Next Steps</p>
+
+      <div class="flex items-start gap-3 mb-4">
+        <div class="w-6 h-6 rounded bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+        </div>
+        <p class="text-sm text-slate-300">Payment processed securely via Stripe.</p>
+      </div>
+
+      <div class="flex items-start gap-3">
+        <div class="w-6 h-6 rounded bg-brand/20 text-brand-light flex items-center justify-center shrink-0 mt-0.5"><span class="text-xs font-bold">2</span></div>
+        <p class="text-sm text-slate-300">Connect your eBay store and vault your supplier credentials to activate auto-ordering.</p>
+      </div>
+    </div>
+
+    <a href="/api-setup" class="block w-full bg-brand hover:bg-brand-light text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-brand/20 text-lg">
+      Go to API Setup Hub
+    </a>
+    <a href="/dashboard" class="block mt-6 text-sm font-bold text-slate-500 hover:text-white transition-colors">Return to Dashboard</a>
+  </div>
+</main>
+{% endblock %}

@@ -5,4 +5,16 @@ __pycache__/
 dist/
 build/
 .env
+
+# Python venvs
 venv/
+.venv/
+
+# Flask runtime
+instance/
+
+# Local DBs
+*.db
+
+# Alembic cache (optional)
+*.sqlite
