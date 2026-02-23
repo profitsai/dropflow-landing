@@ -5,17 +5,53 @@ A Flask-powered marketing site and SaaS dashboard UI for DropFlow — the dropsh
 ## Quick Start
 
 ```bash
+python -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
+cp .env.example .env  # optional; or create .env manually
 python app.py
 ```
 
 Then visit **http://localhost:5000/**
 
+## Environment Variables
+
+Create a `.env` file in the project root. Example:
+
+```env
+SECRET_KEY=change-me-in-production
+SQLALCHEMY_DATABASE_URI=sqlite:///dropflow.db
+# Recommended: dedicated Fernet key for SupplierVault encryption
+# Generate with: python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+VAULT_ENCRYPTION_KEY=replace-with-generated-fernet-key
+```
+
+If `VAULT_ENCRYPTION_KEY` is not set, `SECRET_KEY` is used as fallback key material.
+
+## Database & Migrations (Flask-Migrate / Alembic)
+
+Initial setup:
+
+```bash
+export FLASK_APP=app.py
+flask db init
+flask db migrate -m "Initial schema"
+flask db upgrade
+```
+
+After model changes:
+
+```bash
+flask db migrate -m "Describe change"
+flask db upgrade
+```
+
 ## Project Structure
 
 ```
-├── app.py                  # Flask application & routes
-├── requirements.txt        # Python dependencies (Flask)
+├── app.py                  # Flask application, extension wiring, routes
+├── models.py               # SQLAlchemy models + auth/encryption helpers
+├── requirements.txt        # Python dependencies
 ├── static/
 │   └── dashboard.jpg       # Dashboard screenshot for landing page
 └── templates/
@@ -48,9 +84,25 @@ Then visit **http://localhost:5000/**
 | `/scraper` | `scraper.html` | Store scraper |
 | `/settings` | `settings.html` | App settings |
 
+## Auth Smoke Test (manual)
+
+After `flask db upgrade` and `python app.py`, verify auth quickly:
+
+1. Open `http://localhost:5000/dashboard` while logged out → should redirect to `/login`.
+2. Go to `http://localhost:5000/signup` and create a user with email/password.
+3. You should be redirected to `/dashboard` as a logged-in user.
+4. In a new private/incognito window, log in via `http://localhost:5000/login` using the same credentials.
+5. (Optional logout check) run this in your browser console while logged in:
+   ```js
+   fetch('/logout', { method: 'POST' }).then(() => location.href = '/dashboard')
+   ```
+   You should be redirected back to `/login`.
+
 ## Tech Stack
 
-- **Backend:** Flask (Jinja2 templating)
+- **Backend:** Flask + Flask-SQLAlchemy + Flask-Login + Flask-Migrate
+- **Security:** Werkzeug password hashing + Fernet encryption for SupplierVault secrets
+- **Config:** python-dotenv
 - **CSS:** Tailwind CSS v3 (CDN)
 - **Interactivity:** Alpine.js (CDN) — all UI state is client-side
 - **Charts:** ApexCharts (dashboard)
@@ -62,5 +114,5 @@ Then visit **http://localhost:5000/**
 - Marketing pages extend `base.html` — includes nav, footer, scroll animations
 - Dashboard pages extend `dashboard_base.html` — includes sidebar, Alpine.js toast store
 - Internal links use Flask `url_for()` or relative paths (`/dashboard`, `/products`, etc.)
-- No database — all data is mock/static Alpine.js arrays for demo purposes
+- Database schema now includes: `User`, `EbayStore`, `SupplierVault`, `Product`, `Order`
 - `[x-cloak]` CSS rule is included for clean Alpine.js transitions
