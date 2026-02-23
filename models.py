@@ -27,10 +27,16 @@ def _derive_fernet_key(raw_value: str) -> bytes:
 
 
 def _get_vault_cipher() -> Fernet:
-    key_source = os.getenv("VAULT_ENCRYPTION_KEY") or os.getenv("SECRET_KEY")
+    """Return the Fernet cipher for SupplierVault encryption.
+
+    CRITICAL: We require VAULT_ENCRYPTION_KEY explicitly.
+    Falling back to SECRET_KEY couples session security to vault encryption and
+    makes key rotation dangerous (it would silently break decryption).
+    """
+    key_source = os.getenv("VAULT_ENCRYPTION_KEY")
     if not key_source:
         raise RuntimeError(
-            "Missing VAULT_ENCRYPTION_KEY/SECRET_KEY. Set one in your environment or .env"
+            "Missing VAULT_ENCRYPTION_KEY. Generate a Fernet key and set it in your environment/.env"
         )
     return Fernet(_derive_fernet_key(key_source))
 

@@ -11,6 +11,7 @@ from flask_login import (
 )
 from flask_mail import Mail, Message
 from flask_migrate import Migrate
+from flask_wtf.csrf import CSRFProtect
 from itsdangerous import BadSignature, BadTimeSignature, URLSafeTimedSerializer
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -31,6 +32,14 @@ app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "dev-secret-change-me")
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv(
     "SQLALCHEMY_DATABASE_URI", "sqlite:///dropflow.db"
 )
+
+# Fail-loud on insecure defaults outside debug/dev contexts.
+# If someone runs this in production without setting SECRET_KEY, sessions and
+# token signing become predictable/forgeable.
+if app.config["SECRET_KEY"] == "dev-secret-change-me" and not app.debug:
+    raise RuntimeError(
+        "SECRET_KEY is not set. Copy .env.example to .env and set a strong SECRET_KEY."
+    )
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 # Mail Configuration (SendGrid-friendly defaults)
 app.config["MAIL_SERVER"] = os.getenv("MAIL_SERVER", "smtp.sendgrid.net")
@@ -47,6 +56,7 @@ db.init_app(app)
 login_manager = LoginManager(app)
 login_manager.login_view = "login"
 migrate = Migrate(app, db)
+csrf = CSRFProtect(app)
 mail = Mail(app)
 
 
@@ -146,6 +156,7 @@ def login():
 
 @app.route("/logout", methods=["POST"])
 @login_required
+@csrf.exempt  # TODO: add a proper logout form with CSRF token in the app header
 def logout():
     logout_user()
     return redirect(url_for("login"))
@@ -200,6 +211,14 @@ def reset_password_token(token):
                 error="Please enter a new password.",
             )
 
+        if len(password) < 8:
+            return render_template(
+                "auth/reset_password.html",
+                token=token,
+                token_valid=True,
+                error="Password must be at least 8 characters.",
+            )
+
         user.password_hash = generate_password_hash(password)
         db.session.commit()
         flash("Your password has been reset. Please sign in.", "success")
@@ -220,6 +239,11 @@ def signup():
 
         if not email or not password:
             return render_template("signup.html", error="Email and password are required.")
+
+        if len(password) < 8:
+            return render_template(
+                "signup.html", error="Password must be at least 8 characters."
+            )
 
         existing_user = User.query.filter_by(email=email).first()
         if existing_user:
