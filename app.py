@@ -12,6 +12,8 @@ from flask_login import (
 from flask_mail import Mail, Message
 from flask_migrate import Migrate
 from flask_wtf.csrf import CSRFProtect
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from itsdangerous import BadSignature, BadTimeSignature, URLSafeTimedSerializer
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -57,6 +59,10 @@ login_manager = LoginManager(app)
 login_manager.login_view = "login"
 migrate = Migrate(app, db)
 csrf = CSRFProtect(app)
+
+# Basic rate limiting for auth endpoints (defense-in-depth)
+limiter = Limiter(get_remote_address, app=app, default_limits=[])
+
 mail = Mail(app)
 
 
@@ -68,22 +74,46 @@ def _password_reset_serializer():
     return URLSafeTimedSerializer(app.config["SECRET_KEY"])
 
 
-def generate_password_reset_token(email):
+def generate_password_reset_token(user: User) -> str:
+    """Create a timed reset token.
+
+    Includes `password_changed_at` so tokens become effectively single-use:
+    once the password is changed, old tokens stop validating.
+    """
     serializer = _password_reset_serializer()
-    return serializer.dumps(email, salt=RESET_PASSWORD_SALT)
+    payload = {
+        "email": user.email,
+        "pwts": int(user.password_changed_at.timestamp())
+        if user.password_changed_at
+        else 0,
+    }
+    return serializer.dumps(payload, salt=RESET_PASSWORD_SALT)
 
 
 def verify_password_reset_token(token, max_age=RESET_PASSWORD_TOKEN_MAX_AGE_SECONDS):
     serializer = _password_reset_serializer()
     try:
-        email = serializer.loads(token, salt=RESET_PASSWORD_SALT, max_age=max_age)
+        payload = serializer.loads(token, salt=RESET_PASSWORD_SALT, max_age=max_age)
     except (BadSignature, BadTimeSignature):
         return None
 
+    if not isinstance(payload, dict):
+        return None
+
+    email = (payload.get("email") or "").strip().lower()
+    token_pwts = int(payload.get("pwts") or 0)
     if not email:
         return None
 
-    return User.query.filter_by(email=email).first()
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return None
+
+    current_pwts = int(user.password_changed_at.timestamp()) if user.password_changed_at else 0
+    if token_pwts != current_pwts:
+        return None
+
+    return user
 
 
 def send_transactional_email(to_email, subject, template_name, **kwargs):
@@ -136,6 +166,7 @@ def refund():
 
 
 @app.route("/login", methods=["GET", "POST"])
+@limiter.limit("10/minute")
 def login():
     if current_user.is_authenticated:
         return redirect(url_for("dashboard"))
@@ -156,13 +187,13 @@ def login():
 
 @app.route("/logout", methods=["POST"])
 @login_required
-@csrf.exempt  # TODO: add a proper logout form with CSRF token in the app header
 def logout():
     logout_user()
     return redirect(url_for("login"))
 
 
 @app.route("/forgot-password", methods=["GET", "POST"])
+@limiter.limit("5/minute")
 def forgot_password():
     if request.method == "POST":
         email = (request.form.get("email") or "").strip().lower()
@@ -170,7 +201,7 @@ def forgot_password():
         if email:
             user = User.query.filter_by(email=email).first()
             if user:
-                reset_token = generate_password_reset_token(user.email)
+                reset_token = generate_password_reset_token(user)
                 reset_url = url_for(
                     "reset_password_token", token=reset_token, _external=True
                 )
@@ -220,6 +251,7 @@ def reset_password_token(token):
             )
 
         user.password_hash = generate_password_hash(password)
+        user.password_changed_at = db.func.now()
         db.session.commit()
         flash("Your password has been reset. Please sign in.", "success")
         return redirect(url_for("login"))
@@ -229,6 +261,7 @@ def reset_password_token(token):
 
 @app.route("/signup", methods=["GET", "POST"])
 @app.route("/register", methods=["GET", "POST"])
+@limiter.limit("5/minute")
 def signup():
     if current_user.is_authenticated:
         return redirect(url_for("dashboard"))
@@ -254,6 +287,8 @@ def signup():
             password_hash=generate_password_hash(password),
             full_name=(request.form.get("name") or "").strip() or None,
         )
+        # Ensure reset tokens created after signup use the correct timestamp.
+        user.password_changed_at = db.func.now()
         db.session.add(user)
         db.session.commit()
 

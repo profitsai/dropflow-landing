@@ -48,6 +48,8 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(255), unique=True, nullable=False, index=True)
     password_hash = db.Column(db.String(255), nullable=False)
     full_name = db.Column(db.String(120), nullable=True)
+    # Used to invalidate password reset tokens (single-use semantics)
+    password_changed_at = db.Column(db.DateTime, server_default=db.func.now(), nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now(), nullable=False)
 
     ebay_stores = db.relationship("EbayStore", back_populates="user", cascade="all, delete-orphan")

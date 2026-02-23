@@ -4,6 +4,7 @@ flask-login
 flask-migrate
 Flask-Mail
 Flask-WTF
+Flask-Limiter
 python-dotenv
 cryptography
 itsdangerous
